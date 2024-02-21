@@ -50,6 +50,9 @@
     "web-vitals": "^2.1.3",
     "web3": "^1.7.4"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
