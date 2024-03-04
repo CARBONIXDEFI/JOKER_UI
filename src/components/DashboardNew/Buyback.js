@@ -10,6 +10,8 @@ import daiLogo from '../../assets/images/dai.jpeg';
 import dimeLogo from '../../assets/images/dime.jpeg';
 import blackLogo from '../../assets/images/black.jpeg';
 import jusdLogo from '../../assets/images/JUSD.svg';
+import creditsimg from '../../assets/img/creditsicon.png';
+import dimeimg from '../../assets/img/Dimeicon.png';
 import MyAlgoConnect from '@randlabs/myalgo-connect';
 import buybackDetails from '../Dashboard/stablecoin-only.json';
 import node from './nodeapi.json';
@@ -117,7 +119,7 @@ const Stablecoin = () => {
         const fxs_amount = (splited_value * 100) / PRICE_PRECISION;
 
         console.log("fxs_amount:", fxs_amount);
-        const splited_value1 = (fxs_amount * 50) / 100;
+        const splited_value1 = (fxs_amount);
         // const fxs_dollar_value_d181 = (splited_value1 * fxs_price) / PRICE_PRECISION;
         console.log("fxs_dollar_value_d181",splited_value,fxs_amount,splited_value1)
         const black_dollar_value_d18 = ((fxs_amount - splited_value1) * (black_price )) / PRICE_PRECISION;
@@ -670,7 +672,7 @@ const buyback = async() =>{
         // await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         toast.success("BuyBackDIME is Done succeefully");
         handleHideLoad();
@@ -1287,7 +1289,7 @@ const elemMax = () =>
                                 <Row>
                                     <Col sm={5} className="mb-sm-0 mb-3">
                                         <Button variant='link' className='btn-currency p-0'>
-                                            <img src={dimeLogo} alt="ELEM" />
+                                            <img src={dimeimg} alt="ELEM" />
                                             <div className="ms-3 text-start">
                                                 {/* <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(elemBalances)/1000000 ? (parseFloat(elemBalances)/1000000).toFixed(2): '0.00'}</h5> */}
                                                 <h5 className='mb-0 font-semibold'>DIME</h5>
@@ -1313,13 +1315,13 @@ const elemMax = () =>
                                     </Col>
                                 </Row>
                             </div>
-                            <div className="group-row">
+                            {/* <div className="group-row">
                                 <Row>
                                     <Col sm={5} className="mb-sm-0 mb-3">
                                         <Button variant='link' className='btn-currency p-0'>
                                             <img src={blackLogo} alt="ELEM" />
                                             <div className="ms-3 text-start">
-                                                {/* <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(elemBalances)/1000000 ? (parseFloat(elemBalances)/1000000).toFixed(2): '0.00'}</h5> */}
+                                                <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(elemBalances)/1000000 ? (parseFloat(elemBalances)/1000000).toFixed(2): '0.00'}</h5>
                                                 <h5 className='mb-0 font-semibold'>BLACK</h5>
                                             </div>
                                         </Button>
@@ -1331,7 +1333,7 @@ const elemMax = () =>
                                         </div>
                                     </Col>
                                 </Row>
-                            </div>
+                            </div> */}
                             <div className="p-sm-4 p-2">
                                 <Button variant='blue' style={{cursor:"default"}} className='rounded-circle py-3'><svg width="20" height="20" className='m-0' viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.6255 11.0884C16.9501 10.7638 16.9501 10.2375 16.6255 9.91289C16.301 9.58848 15.7752 9.58824 15.4505 9.91236L11.3799 13.9756V4.66732C11.3799 4.20708 11.0068 3.83398 10.5465 3.83398C10.0863 3.83398 9.71322 4.20708 9.71322 4.66732V13.9756L5.65462 9.90978C5.32808 9.58266 4.79811 9.58242 4.47128 9.90925C4.14466 10.2359 4.14466 10.7654 4.47128 11.0921L9.94049 16.5613C10.2752 16.896 10.8179 16.896 11.1526 16.5613L16.6255 11.0884Z" fill="white"></path></svg></Button>
                             </div>

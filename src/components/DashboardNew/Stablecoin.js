@@ -3,6 +3,7 @@ import { Alert, Button, Card, Col, Container, OverlayTrigger, Row, Tab, Tabs, To
 import Layout from './LayoutT';
 import { Link } from 'react-router-dom';
 import USDC from '../../assets/images/usdc.jpg';
+
 import ButtonLoad from 'react-bootstrap-button-loader';
 import { updatealgobalance } from "../formula";
 import BigNumber from "bignumber.js";
@@ -20,6 +21,8 @@ import daiLogo from '../../assets/images/dai.jpeg';
 import dimeLogo from '../../assets/images/dime.jpeg';
 import blackLogo from '../../assets/images/black.jpeg';
 import jusdLogo from '../../assets/images/JUSD.svg';
+import creditsimg from '../../assets/img/creditsicon.png';
+import dimeimg from '../../assets/img/Dimeicon.png';
 import MyAlgoConnect from '@randlabs/myalgo-connect';
 import node from './nodeapi.json'
 import WalletConnect from "@walletconnect/client";
@@ -231,7 +234,7 @@ const Stablecoin = () => {
         let collateral_price = await JusdPoolContract.collateral_prices(0);
         let col_ratio = await JUSDContract.global_collateral_ratio();
         let fxs_price = await JusdPoolContract.getFXSPrice();
-        let black_price = await JusdPoolContract.getBLACKPrice();
+        let black_price = await JusdPoolContract.getFRAXPrice();
         console.log("collateral_price", await ethers.utils.formatUnits(collateral_price, 0))
         let collat_needed = e * 1e18;
         let PRICE_PRECISION = 1e6;
@@ -247,14 +250,14 @@ const Stablecoin = () => {
         console.log("frax_for_collat",frax_for_collat)
         const frax_for_fxs = frax_amount - frax_for_collat;
         //    const collat_needed = getFRAXInCollateral(col_idx, frax_for_collat);
-        const splited_value = (frax_for_fxs * 50) / 100;
+        //const splited_value = (frax_for_fxs * 50) / 100;
 
-        const fxs_needed = (splited_value * PRICE_PRECISION) / (await ethers.utils.formatUnits(fxs_price, 0)); // Implement getFXSPrice function
-        const black_needed = (frax_for_fxs - splited_value) * PRICE_PRECISION / ((await ethers.utils.formatUnits(black_price, 0)) ); // Implement getBLACKPrice function
+        const fxs_needed = (frax_for_fxs * PRICE_PRECISION) / (await ethers.utils.formatUnits(fxs_price, 0)); // Implement getFXSPrice function
+        //const black_needed = (frax_for_fxs - splited_value) * PRICE_PRECISION / ((await ethers.utils.formatUnits(black_price, 0)) ); // Implement getBLACKPrice function
         const total_frax_mint = (frax_amount *  (PRICE_PRECISION - 3000)) / PRICE_PRECISION; //minting_fee[col_idx] = 3000;
-        console.log("fxs_needed",fxs_needed,black_needed,total_frax_mint)
+        console.log("fxs_needed",fxs_needed,total_frax_mint)
         setfxsValue(fxs_needed);
-        setblackValue(black_needed);
+        //setblackValue(black_needed);
         setfraxValue(total_frax_mint)
 
 
@@ -297,7 +300,7 @@ const Stablecoin = () => {
           // Algorithmic
           const splited_value = (frax_after_fee * 50) / 100;
           fxs_out = (splited_value * PRICE_PRECISION) /await ethers.utils.formatUnits(await JusdPoolContract.getFXSPrice(), 0);
-          black_out = (frax_after_fee - splited_value) * PRICE_PRECISION / ((await ethers.utils.formatUnits(await JusdPoolContract.getBLACKPrice(), 0)) );
+          black_out = (frax_after_fee - splited_value) * PRICE_PRECISION / ((await ethers.utils.formatUnits(await JusdPoolContract.getFRAXPrice(), 0)) );
         } else {
           // Fractional
         
@@ -307,7 +310,7 @@ const Stablecoin = () => {
          
           const splited_value = (frax_after_fee * 50) / 100;
           fxs_out = (splited_value * (PRICE_PRECISION - col_ratio)) / await ethers.utils.formatUnits(await JusdPoolContract.getFXSPrice(), 0);;
-          black_out = (frax_after_fee - splited_value) * (PRICE_PRECISION - col_ratio) / ((await ethers.utils.formatUnits(await JusdPoolContract.getBLACKPrice(), 0)) );
+          black_out = (frax_after_fee - splited_value) * (PRICE_PRECISION - col_ratio) / ((await ethers.utils.formatUnits(await JusdPoolContract.getFRAXPrice(), 0)) );
         }
         setcollatout(collat_out);
         setfxsOut(fxs_out)
@@ -1859,11 +1862,11 @@ const mintJUsd = async() =>{
         // const val11 = ethers.utils.formatUnits(100000000000000, 18);
         // const val1 =  ethers.utils.parseUnits(val11, 18);;
         // Send the transaction and wait for it to be mined
-        const mintTx = await JusdPoolContract.mintFrax(0,BigInt(fxsAmount),1,BigInt(daiAmount+1e18),1,false);
+        const mintTx = await JusdPoolContract.mintFrax(0,BigInt(fraxValue),0,BigInt(daiAmount+1e18),BigInt(fxsAmount+1e18),false);
         // await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         toast.success("Mint is Done succeefully");
         handleHideMint();
@@ -2261,7 +2264,7 @@ const globalStateRatioCallEinr = async () =>
                                         <Row>
                                             <Col sm={5} className="mb-sm-0 mb-3">
                                                 <Button variant='link' className='btn-currency p-0'>
-                                                    <img src={dimeLogo} alt="USDC" />
+                                                    <img src={dimeimg} alt="USDC" />
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>DIME</h5>
@@ -2276,7 +2279,7 @@ const globalStateRatioCallEinr = async () =>
                                             </Col>
                                         </Row>
                                     </div>
-                                    <div className="group-row">
+                                    {/* <div className="group-row">
                                         <Row>
                                             <Col sm={5} className="mb-sm-0 mb-3">
                                                 <Button variant='link' className='btn-currency p-0'>
@@ -2284,7 +2287,6 @@ const globalStateRatioCallEinr = async () =>
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>BLACK</h5>
-                                                        {/* <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(elemBalances) ? (parseFloat(elemBalances)/1000000).toFixed(2) : '0.00'}</h5> */}
                                                     </div>
                                                 </Button>
                                             </Col>
@@ -2294,7 +2296,7 @@ const globalStateRatioCallEinr = async () =>
                                                 </div>
                                             </Col>
                                         </Row>
-                                    </div>
+                                    </div> */}
                                     <div className="py-2 px-sm-4 px-2">
                                         <Button variant='blue' style={{cursor:"default"}} className='rounded-circle py-3'><svg width="20" height="20" className='m-0' viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.6255 11.0884C16.9501 10.7638 16.9501 10.2375 16.6255 9.91289C16.301 9.58848 15.7752 9.58824 15.4505 9.91236L11.3799 13.9756V4.66732C11.3799 4.20708 11.0068 3.83398 10.5465 3.83398C10.0863 3.83398 9.71322 4.20708 9.71322 4.66732V13.9756L5.65462 9.90978C5.32808 9.58266 4.79811 9.58242 4.47128 9.90925C4.14466 10.2359 4.14466 10.7654 4.47128 11.0921L9.94049 16.5613C10.2752 16.896 10.8179 16.896 11.1526 16.5613L16.6255 11.0884Z" fill="white"></path></svg></Button>
                                     </div>
@@ -2302,10 +2304,10 @@ const globalStateRatioCallEinr = async () =>
                                         <Row>
                                             <Col sm={5} className="mb-sm-0 mb-3">
                                                 <Button variant='link' className='btn-currency p-0'>
-                                                    <img src={jusdLogo} alt="USDC" />
+                                                    <img src={creditsimg} alt="USDC" />
                                                     <div className="ms-3 text-start">
                                                         
-                                                        <h5 className='mb-0 font-semibold'>JUSD</h5>
+                                                        <h5 className='mb-0 font-semibold'>CREDITS</h5>
                                                         {/* <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(tauBalances) ? (parseFloat(tauBalances)/1000000).toFixed(2) : '0.00'}</h5> */}
                                                     </div>
                                                 </Button>
@@ -2351,11 +2353,11 @@ const globalStateRatioCallEinr = async () =>
                                          {mintenabled ? 
                                         (<>
                                          <ButtonLoad loading={loadMint} className='btn w-100 btn-blue mb-20' onClick={mintJUsd}>
-                                                Mint JUSD
+                                                Mint CREDITS
                                             </ButtonLoad>
                                         </>):(<>
                                             <ButtonLoad disabled={true} className='btn w-100 btn-blue mb-20' >
-                                                Mint JUSD is not Available
+                                                Mint CREDITS is not Available
                                             </ButtonLoad>
                                         </>)}
                                         </>):(<>
@@ -2381,10 +2383,10 @@ const globalStateRatioCallEinr = async () =>
                                         <Row>
                                             <Col sm={5} className="mb-sm-0 mb-3">
                                                 <Button variant='link' className='btn-currency p-0'>
-                                                    <img src={jusdLogo} alt="USDC" />
+                                                    <img src={creditsimg} alt="USDC" />
                                                     <div className="ms-3 text-start">
                                                         
-                                                        <h5 className='mb-0 font-semibold'>JUSD</h5>
+                                                        <h5 className='mb-0 font-semibold'>CREDITS</h5>
                                                         <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(usdcBalances) ? (parseFloat(usdcBalances)/1000000).toFixed(2) : '0.00'}</h5>
                                                     </div>
                                                 </Button>
@@ -2435,7 +2437,7 @@ const globalStateRatioCallEinr = async () =>
                                         <Row>
                                             <Col sm={5} className="mb-sm-0 mb-3">
                                                 <Button variant='link' className='btn-currency p-0'>
-                                                    <img src={dimeLogo} alt="USDC" />
+                                                    <img src={dimeimg} alt="USDC" />
                                                     <div className="ms-3 text-start">
                                                         <h5 className='mb-0 font-semibold'>DIME</h5>
                                                         {/* <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(elemBalances) ? (parseFloat(elemBalances)/1000000).toFixed(2) : '0.00'}</h5> */}
@@ -2450,14 +2452,14 @@ const globalStateRatioCallEinr = async () =>
                                             </Col>
                                         </Row>
                                     </div>
-                                    <div className="group-row">
+                                    {/* <div className="group-row">
                                         <Row>
                                             <Col sm={5} className="mb-sm-0 mb-3">
                                                 <Button variant='link' className='btn-currency p-0'>
                                                     <img src={blackLogo} alt="USDC" />
                                                     <div className="ms-3 text-start">
                                                         <h5 className='mb-0 font-semibold'>BLACK</h5>
-                                                        {/* <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(EinrBalances) ? (parseFloat(EinrBalances)/1000000).toFixed(2) : '0.00'}</h5> */}
+                                                         <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(EinrBalances) ? (parseFloat(EinrBalances)/1000000).toFixed(2) : '0.00'}</h5> 
 
                                                     </div>
                                                 </Button>
@@ -2468,7 +2470,7 @@ const globalStateRatioCallEinr = async () =>
                                                 </div>
                                             </Col>
                                         </Row>
-                                    </div>
+                                    </div> */}
 
 
                                     <hr className='my-4' />
@@ -2509,10 +2511,12 @@ const globalStateRatioCallEinr = async () =>
                                             <ButtonLoad disabled={true} className='btn w-100 btn-blue mb-20' >
                                             Redeem not Available
                                             </ButtonLoad>
+                                          
                                         </>)}
+                                        
                                         </>):(<>
                                             <ButtonLoad loading={loadMint} className='btn w-100 btn-blue mb-20' onClick={approvejusd}>
-                                            Approve JUSD
+                                            Approve CREDITS
                                             </ButtonLoad>
                                         </>)}
                                        
