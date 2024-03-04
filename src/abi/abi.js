@@ -7510,7 +7510,7 @@ export const CREDITChainlinkAddress = "0x921cd6656A120993D31921941fF5967C8092CCE
 export const JOKERChainlinkAddress = "0x3BDDDB36fC0A55D474D2e53ef5Ab7f0fc1a1F91D";//need to change
 export const USDCChainlinkAddress = "0x774586748f90BFbc2522B3255A5ED70ae9F84D3a";
 //Tokens
-export const DIMEAddress = "0xe8Bf46e7283c267d9C1532810017bA5ba2cAC996";
+export const DIMEAddress = "0xE269D5A4a416967b69628F036341CC69BBA86334";
 export const JOKERAddress ="0x538d56e505d1727ac9D2f227a7BDC4c01803ddd0"//"0xEfF92A263d31888d860bD50809A8D171709b7b1c"//"0x14ab3Ff58e178bd706CD3DAFD24FCEa414Fb62b2";
 export const jokerAddressForMinting = "0x345cb61a3CF8062b06827646Dc1D53a8898a7841";
 export const CREDITAddress = "0x118C400F508BCe999De1cD875E4Be804e847E915";
@@ -9302,11 +9302,6 @@ export const JUSDPoolAbi =[
 				"type": "address"
 			},
 			{
-				"internalType": "address",
-				"name": "black_address",
-				"type": "address"
-			},
-			{
 				"internalType": "address[]",
 				"name": "_collateral_addresses",
 				"type": "address[]"
@@ -9697,19 +9692,6 @@ export const JUSDPoolAbi =[
 	},
 	{
 		"inputs": [],
-		"name": "blackAddress",
-		"outputs": [
-			{
-				"internalType": "contract ERC20",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "bonus_rate",
 		"outputs": [
 			{
@@ -10042,19 +10024,6 @@ export const JUSDPoolAbi =[
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "getBLACKPrice",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -10172,11 +10141,6 @@ export const JUSDPoolAbi =[
 				"internalType": "uint256",
 				"name": "fxs_needed",
 				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "black_needed",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -10267,19 +10231,6 @@ export const JUSDPoolAbi =[
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "priceFeedBLACKUSD",
-		"outputs": [
-			{
-				"internalType": "contract AggregatorV3Interface",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -10475,11 +10426,6 @@ export const JUSDPoolAbi =[
 				"internalType": "uint256",
 				"name": "fxs_out",
 				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "black_out",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -10616,11 +10562,6 @@ export const JUSDPoolAbi =[
 			{
 				"internalType": "address",
 				"name": "_fxs_usd_chainlink_addr",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_black_usd_chainlink_addr",
 				"type": "address"
 			}
 		],
@@ -11207,19 +11148,6 @@ export const JUSDAbi =[
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "frozen",
-				"type": "bool"
-			}
-		],
-		"name": "TokenFrozen",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
 				"indexed": true,
 				"internalType": "address",
 				"name": "from",
@@ -11239,25 +11167,6 @@ export const JUSDAbi =[
 			}
 		],
 		"name": "Transfer",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "wallet",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "frozen",
-				"type": "bool"
-			}
-		],
-		"name": "WalletFrozen",
 		"type": "event"
 	},
 	{
@@ -11376,32 +11285,6 @@ export const JUSDAbi =[
 			}
 		],
 		"name": "balanceOf",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "black_eth_oracle_address",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "black_price",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -11665,69 +11548,6 @@ export const JUSDAbi =[
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bool",
-				"name": "freeze",
-				"type": "bool"
-			}
-		],
-		"name": "freezeToken",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "wallet",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "freeze",
-				"type": "bool"
-			}
-		],
-		"name": "freezeWallet",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "frozenToken",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "frozenWallets",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -12165,24 +11985,6 @@ export const JUSDAbi =[
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_black_oracle_addr",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_weth_address",
-				"type": "address"
-			}
-		],
-		"name": "setBlackEthOracle",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "_controller_address",
 				"type": "address"
 			}
@@ -12341,19 +12143,6 @@ export const JUSDAbi =[
 			}
 		],
 		"name": "setTimelock",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_global_collateral_ratio",
-				"type": "uint256"
-			}
-		],
-		"name": "setglobal_collateral_ratio",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -13461,13 +13250,27 @@ export const DaiAbi =[
 	{
 		"inputs": [
 			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "symbol",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "initialAccount",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
-				"name": "chainId_",
+				"name": "initialBalance",
 				"type": "uint256"
 			}
 		],
-		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "constructor"
 	},
 	{
@@ -13476,60 +13279,23 @@ export const DaiAbi =[
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "src",
+				"name": "owner",
 				"type": "address"
 			},
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "guy",
+				"name": "spender",
 				"type": "address"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "wad",
+				"name": "value",
 				"type": "uint256"
 			}
 		],
 		"name": "Approval",
-		"type": "event"
-	},
-	{
-		"anonymous": true,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "bytes4",
-				"name": "sig",
-				"type": "bytes4"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "usr",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "bytes32",
-				"name": "arg1",
-				"type": "bytes32"
-			},
-			{
-				"indexed": true,
-				"internalType": "bytes32",
-				"name": "arg2",
-				"type": "bytes32"
-			},
-			{
-				"indexed": false,
-				"internalType": "bytes",
-				"name": "data",
-				"type": "bytes"
-			}
-		],
-		"name": "LogNote",
 		"type": "event"
 	},
 	{
@@ -13538,19 +13304,19 @@ export const DaiAbi =[
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "src",
+				"name": "from",
 				"type": "address"
 			},
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "dst",
+				"name": "to",
 				"type": "address"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "wad",
+				"name": "value",
 				"type": "uint256"
 			}
 		],
@@ -13558,46 +13324,15 @@ export const DaiAbi =[
 		"type": "event"
 	},
 	{
-		"constant": true,
-		"inputs": [],
-		"name": "DOMAIN_SEPARATOR",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "PERMIT_TYPEHASH",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "owner",
 				"type": "address"
 			},
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "spender",
 				"type": "address"
 			}
 		],
@@ -13609,21 +13344,19 @@ export const DaiAbi =[
 				"type": "uint256"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": false,
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "usr",
+				"name": "spender",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "wad",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
@@ -13635,16 +13368,37 @@ export const DaiAbi =[
 				"type": "bool"
 			}
 		],
-		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"constant": true,
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "approveInternal",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
 				"type": "address"
 			}
 		],
@@ -13656,32 +13410,59 @@ export const DaiAbi =[
 				"type": "uint256"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": false,
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "usr",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
-				"name": "wad",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
 		"name": "burn",
 		"outputs": [],
-		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"constant": true,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "burn",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "burnFrom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "decimals",
 		"outputs": [
@@ -13691,72 +13472,76 @@ export const DaiAbi =[
 				"type": "uint8"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": false,
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "guy",
-				"type": "address"
-			}
-		],
-		"name": "deny",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "usr",
+				"name": "spender",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "wad",
+				"name": "subtractedValue",
+				"type": "uint256"
+			}
+		],
+		"name": "decreaseAllowance",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "addedValue",
+				"type": "uint256"
+			}
+		],
+		"name": "increaseAllowance",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
 		"name": "mint",
 		"outputs": [],
-		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "src",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "dst",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "wad",
-				"type": "uint256"
-			}
-		],
-		"name": "move",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
 		"inputs": [],
 		"name": "name",
 		"outputs": [
@@ -13766,138 +13551,10 @@ export const DaiAbi =[
 				"type": "string"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": true,
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "nonces",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "holder",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "spender",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "nonce",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "expiry",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bool",
-				"name": "allowed",
-				"type": "bool"
-			},
-			{
-				"internalType": "uint8",
-				"name": "v",
-				"type": "uint8"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "r",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "s",
-				"type": "bytes32"
-			}
-		],
-		"name": "permit",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "usr",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "wad",
-				"type": "uint256"
-			}
-		],
-		"name": "pull",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "usr",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "wad",
-				"type": "uint256"
-			}
-		],
-		"name": "push",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "guy",
-				"type": "address"
-			}
-		],
-		"name": "rely",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
 		"inputs": [],
 		"name": "symbol",
 		"outputs": [
@@ -13907,12 +13564,10 @@ export const DaiAbi =[
 				"type": "string"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": true,
 		"inputs": [],
 		"name": "totalSupply",
 		"outputs": [
@@ -13922,21 +13577,19 @@ export const DaiAbi =[
 				"type": "uint256"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": false,
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "dst",
+				"name": "recipient",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "wad",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
@@ -13948,26 +13601,24 @@ export const DaiAbi =[
 				"type": "bool"
 			}
 		],
-		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"constant": false,
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "src",
+				"name": "sender",
 				"type": "address"
 			},
 			{
 				"internalType": "address",
-				"name": "dst",
+				"name": "recipient",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "wad",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
@@ -13979,44 +13630,30 @@ export const DaiAbi =[
 				"type": "bool"
 			}
 		],
-		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"constant": true,
-		"inputs": [],
-		"name": "version",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "from",
 				"type": "address"
-			}
-		],
-		"name": "wards",
-		"outputs": [
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "value",
 				"type": "uint256"
 			}
 		],
-		"payable": false,
-		"stateMutability": "view",
+		"name": "transferInternal",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]
@@ -20736,11 +20373,11 @@ export const saiTokenAddress = "0x4089385DDacf13AEDf975E954C47E965797FA3AB";
 export const launchpadAddress = "0x5a7438e6c024C9618e948B5dD1941098AD4E44c4";
 
 
-export const JUSDPoolAddress = "0x3835EBeAb162061cA13407963BCe0030CC2B641f";
-export const JUSDAddress = "0xeeaeCf2Adb6Ae4fDf9c0988c6349cE36a8f21423";
+export const JUSDPoolAddress = "0xA14D212076a4CE40c5A6B426cccB5094A65BbbE7";//v3pool
+export const JUSDAddress = "0x77178d292Fd4C640a0db76EeC67c5267ff60297C";//credit
 // export const DIMEAddress = "0x988FD5766D1E00C49D1d887f9190D1515732c016";
-export const DAIAddress = "0xf04Baae45502005C33400365e55314D22d5Aed45";
-export const BLACKAddress = "0xe1A72F9A83DDF729759A3Bf334766b9373b7fC2C";
+export const DAIAddress = "0x4a726939eF45fE551650E71C4D4d52298Ccf67e3";//usdt
+export const BLACKAddress = "0x538d56e505d1727ac9D2f227a7BDC4c01803ddd0";//joker
 
 export const BondAddress = "0x418F4AB414Ae7A70E30De2A7043ED9213b313b36";
 // export const TreasuryAddress ="0x2c8d9d7d6cAcC5d53BcC056522A8f86440396619";

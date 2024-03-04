@@ -11,6 +11,8 @@ import daiLogo from '../../assets/images/dai.jpeg';
 import dimeLogo from '../../assets/images/dime.jpeg';
 import blackLogo from '../../assets/images/black.jpeg';
 import jusdLogo from '../../assets/images/JUSD.svg';
+import creditsimg from '../../assets/img/creditsicon.png';
+import dimeimg from '../../assets/img/Dimeicon.png';
 import MyAlgoConnect from '@randlabs/myalgo-connect';
 import recollateralizeDetails from '../Dashboard/stablecoin-only.json';
 import node from './nodeapi.json';
@@ -127,14 +129,13 @@ const Stablecoin = () => {
         }
         // Calculate the attempted amount of FXS
         const fxs_out = (collateral_amount_d18 * (PRICE_PRECISION + bonus_rate - recollat_fee)) / PRICE_PRECISION;
-        const fxs_amount = ((fxs_out * 50) / 100) / fxs_price;
-        const black_amount = ((fxs_out * 50) / 100) / ((await ethers.utils.formatUnits(await JusdPoolContract.getBLACKPrice(), 0)) ); // Replace with the actual function
+        const fxs_amount = (fxs_out) / fxs_price;
+        // const black_amount = ( / 100) / ((await ethers.utils.formatUnits(await JusdPoolContract.getBLACKPrice(), 0)) ); // Replace with the actual function
       
         setfxsamount(fxs_amount);
-        setblackAmount(black_amount)
+        // setblackAmount(black_amount)
         return {
           fxs_amount,
-          black_amount,
         };
       }
 
@@ -153,7 +154,7 @@ const Stablecoin = () => {
         );
 
         console.log("fxs_amount:", values.fxs_amount);
-        console.log("black_amount:", values.black_amount);
+        // console.log("black_amount:", values.black_amount);
     }
 
     function sleep(ms) {
@@ -606,7 +607,7 @@ const recollateralize = async() =>{
         // await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         toast.success("Recollateralize is Done succeefully");
         handleHideLoad();
@@ -1672,7 +1673,7 @@ const globalStateRatioCall = async () =>
                     <Row>
                         <Col sm={5} className="mb-sm-0 mb-3">
                             <Button variant='link' className='btn-currency p-0'>
-                                <img src={dimeLogo} alt="ELEM" />
+                                <img src={dimeimg} alt="ELEM" />
                                 <div className="ms-3 text-start">
                                     {/* <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(elemBalances)/1000000 ? (parseFloat(elemBalances)/1000000).toFixed(2): '0.00'}</h5> */}
                                     <h5 className='mb-0 font-semibold'>DIME</h5>
@@ -1686,13 +1687,12 @@ const globalStateRatioCall = async () =>
                         </Col>
                     </Row>
                 </div>
-                <div className="group-row">
-                    <Row>
+                {/* <div className="group-row"> */}
+                    {/* <Row>
                         <Col sm={5} className="mb-sm-0 mb-3">
                             <Button variant='link' className='btn-currency p-0'>
                                 <img src={blackLogo} alt="ELEM" />
                                 <div className="ms-3 text-start">
-                                    {/* <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(elemBalances)/1000000 ? (parseFloat(elemBalances)/1000000).toFixed(2): '0.00'}</h5> */}
                                     <h5 className='mb-0 font-semibold'>BLACK</h5>
                                 </div>
                             </Button>
@@ -1702,8 +1702,8 @@ const globalStateRatioCall = async () =>
                                 <input type="number" placeholder='0.00' value={parseFloat(blackAmount) ? (parseFloat(blackAmount)/1e18).toFixed(8): '0.00'} readonly disabled className='form-control' />
                             </div>
                         </Col>
-                    </Row>
-                </div>
+                    </Row> */}
+                {/* </div> */}
 
                 <hr className='my-4' />
 
