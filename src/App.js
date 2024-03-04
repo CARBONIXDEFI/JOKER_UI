@@ -20,7 +20,7 @@ import ElementProtocol from './components/ElementProtocol';
 
 
 // dashboard
-import HotCollectionsApp from './components/DashboardNew/HotCollections'
+// import HotCollectionsApp from './components/DashboardNew/HotCollections'
 import GenesisMarketApp from './components/DashboardNew/GenesisMarket'
 import MyNFTApp from './components/DashboardNew/MyNFT'
 import NFTDetailsApp from './components/DashboardNew/NFTDetails'
@@ -179,9 +179,9 @@ function App() {
         <Route path="/liquidity">
           <Liquidity />
         </Route>                       
-        <Route path="/hot-collections">
+        {/*<Route path="/hot-collections">
           <HotCollectionsApp />
-        </Route>                       
+        </Route>   */}                    
         <Route path="/top-auctioncollection">
           <TopCollectionsAuction/>
         </Route>                       
