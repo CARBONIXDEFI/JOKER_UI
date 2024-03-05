@@ -44,7 +44,7 @@ const indexClient = new algosdk.Indexer('', node['indexerclient'], '');
 
 const Header = (props) => {
     // const { chainId, account, activate, active,library } = useWeb3React();
-
+    
     const [show, setShow] = useState(false);
     const [connectedShow, setConnectedShow] = useState(false);
     const [sidebar, setSidebar] = useState(false);

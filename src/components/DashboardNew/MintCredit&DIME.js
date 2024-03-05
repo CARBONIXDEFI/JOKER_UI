@@ -5,12 +5,17 @@ import { Link } from 'react-router-dom';
 import DAI from '../../assets/images/dai.jpeg';
 import ButtonLoad from 'react-bootstrap-button-loader';
 /* global BigInt */
-
+import { InjectedConnector } from '@web3-react/injected-connector';
 import { ToastContainer, Toast, Zoom, Bounce, toast} from 'react-toastify';
 
 import jokercoin from '../../assets/images/Jokercoin.png';
 import stasiscoin  from '../../assets/images/stasiscoin.png';
 import creditscoin from '../../assets/images/creditscoin.png';
+import MetaMask from '../../assets/images/metamask-icon.svg';
+import Coinbase from '../../assets/images/coinbase-icon.svg';
+
+import Web3 from 'web3';
+import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 import {ethers} from 'ethers';
 
@@ -23,7 +28,12 @@ const Stablecoin = () => {
         document.title = "Mint DIME & CREDITS | ELEMENT"
     }, [])
 
-    const [cRatioUpdateShow, setCRatioUpdateShow] = useState(false);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const [cRatioUpdateShow, setCRatioUpdateShow] = useState(false)
 
     const handleCRatioUpdateShow = () => setCRatioUpdateShow(true);
     const handleCRatioUpdateClose = () => setCRatioUpdateShow(false);
@@ -84,7 +94,9 @@ const Stablecoin = () => {
         }
       };
 
-      useEffect(()=>{fraxCalculation()},[allowan, allowan2])
+      useEffect(()=>{
+            fraxCalculation();
+    },[allowan, allowan2])
 
       const fraxCalculation = async() =>{
         if(localStorage.getItem("walletAddress") === null || localStorage.getItem("walletAddress") === undefined || localStorage.getItem("walletAddress") === ''){                
@@ -166,7 +178,7 @@ const Stablecoin = () => {
      const toastDiv = (txId) =>
     (
         <div>
-            <p> Transaction is successful &nbsp;<a style={{color:'#133ac6'}} href={txId} target="_blank" rel="noreferrer"><br/><p style={{fontWeight: 'bold'}}>View in Sepolia Explorer <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <p> Transaction is successful &nbsp;<a style={{color:'#133ac6'}} href={txId} target="_blank" rel="noreferrer"><br/><p style={{fontWeight: 'bold'}}>View Txn in Explorer <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
      <path d="M11.7176 3.97604L1.69366 14L0.046875 12.3532L10.0697 2.32926H1.23596V0H14.0469V12.8109H11.7176V3.97604Z" fill="#133ac6"/>
      </svg></p></a></p> 
         </div>
@@ -295,6 +307,111 @@ const approveJOKER = async() =>{
     const canMintDimeAndCredit = parseFloat(allowan) >= parseFloat(daiAmount) * 1e18;
     const canApproveJoker = parseInt(allowan2) >= parseInt(JokerInput);
 
+    function formatNumberWithDynamicDecimals(number) {
+        const formattedNumber = parseFloat(number).toString();
+        const [, integerPart, decimalPart] = /^(\d+)\.?(\d*)$/.exec(formattedNumber);
+    
+        if (decimalPart === '0') {
+            // If the decimal part is zero, increase the decimal places until the first non-zero digit
+            for (let i = 1; i <= decimalPart.length; i++) {
+                if (decimalPart.charAt(i - 1) !== '0') {
+                    return `${integerPart}.${decimalPart.slice(0, i)}`;
+                }
+            }
+            // If all decimal places are zero, return only the integer part
+            return integerPart;
+        } else {
+            // If there is a non-zero decimal part, return the original number
+            return formattedNumber;
+        }
+    }
+
+    async function ConnectWallet() {
+        // const { activate, chainId } = useWeb3React();
+          const injectedConnector = new InjectedConnector({ supportedChainIds: [5] });
+          // activate(injectedConnector);
+          // <><Header active = {active}/></>
+          // <AvatarDropDown deactivate = {deactivate} />
+          console.log("injectedConnector", injectedConnector);
+          const chainId = await window.ethereum.request({ method: 'eth_requestAccounts' });
+              console.log(chainId);
+              if(chainId!==0x5)
+              {  await window.ethereum.request({
+                  method: 'wallet_switchEthereumChain',
+                  params: [{ chainId:'0x5' }],
+                });
+              }
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+            .catch((err) => {
+              if (err.code === 4001) {
+                // EIP-1193 userRejectedRequest error
+                // If this happens, the user rejected the connection request.
+                console.log('Please connect to Wallet.');
+              } else {
+                console.error(err);
+              }
+            });
+          const account = accounts[0];
+          localStorage.setItem("walletAddress", accounts[0]);
+          console.log("account", account);
+          await sleep(3000);
+          window.location.reload();
+        }
+
+        const isCoinbaseInstalled = async () => {
+            if (typeof window.ethereum !== "undefined") {
+                console.log("Coinbase is installed!");
+                localStorage.setItem("walletName","Coinbase");
+          
+                const APP_NAME = 'Coinbase';
+                const APP_LOGO_URL = 'https://example.com/logo.png';
+                const DEFAULT_ETH_JSONRPC_URL =  'https://eth-goerli.public.blastapi.io';
+                const DEFAULT_CHAIN_ID = 5;
+          
+                const coinbaseWallet = new CoinbaseWalletSDK({
+                      appName: APP_NAME,
+                      appLogoUrl: APP_LOGO_URL,
+                      darkMode: false
+                    });
+                
+                    // Initialize a Web3 Provider object
+                    const ethereum = coinbaseWallet.makeWeb3Provider(DEFAULT_ETH_JSONRPC_URL, DEFAULT_CHAIN_ID);
+                    const web3 = new Web3(ethereum);
+      
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const account = accounts[0];
+            
+                    console.log(`User's address is ${account}`);
+            // setUserAddress(userAddress);
+            web3.eth.defaultAccount = account;
+            
+              localStorage.setItem("walletAddress", accounts[0]);
+              console.log("account", account);
+              await sleep(3000);
+              window.location.reload();
+              
+              } else {
+                console.log("Coinbase is not installed.");
+                window.open('https://chrome.google.com/webstore/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad', '_blank','noreferrer');
+                
+              }
+            const { ethereum } = window;
+            return Boolean(ethereum && ethereum.Coinbase);
+        };
+
+        const isMetaMaskInstalled = async () => {
+            if (typeof window.ethereum !== "undefined") {
+                console.log("MetaMask is installed!");
+                localStorage.setItem("walletName","Metamask");
+                await ConnectWallet();
+              } else {
+                console.log("MetaMask is not installed.");
+                window.open('https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn', '_blank','noreferrer');
+              }
+            const { ethereum } = window;
+            return Boolean(ethereum && ethereum.isMetaMask);
+        };
+
     return (
         <Layout>
             <><ToastContainer position='bottom-right' draggable = {false} transition={Zoom} autoClose={4000} closeOnClick = {false}/></>
@@ -344,7 +461,7 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>DAI</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(daiBalances) ? (parseFloat(daiBalances)/1e18).toFixed(2) : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(daiBalances) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(daiBalances)/1e18) * 100) / 100 : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
@@ -374,13 +491,13 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>JOKER</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(JokerBalance) ? (parseFloat(JokerBalance)/1e9).toFixed(2) : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(JokerBalance) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(JokerBalance)/1e9) * 10000) / 10000 : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
                                             <Col sm={7}>
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(JokerInput) ? (parseFloat(JokerInput)/1e9).toFixed(4) : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(JokerInput) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(JokerInput)/1e9) * 10000) / 10000 : '0.00'}/>
                                                 </div>
                                             </Col>
                                          
@@ -398,13 +515,13 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>DIME</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(dimeBalance) ? (parseFloat(dimeBalance)/1e9).toFixed(2) : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(dimeBalance) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(dimeBalance)/1e9) * 10000) / 10000 : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
                                             <Col sm={7}>
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(DimeToken) ? (parseFloat(DimeToken)/1e9).toFixed(4) : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(DimeToken) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(DimeToken)/1e9) * 10000) / 10000 : '0.00'}/>
                                                 </div>
                                             </Col>
                                         </Row>
@@ -418,13 +535,13 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>CREDITS</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(creditsBalance) ? (parseFloat(creditsBalance)/1e18).toFixed(2) : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(creditsBalance) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(creditsBalance)/1e18) * 10000) / 10000 : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
                                             <Col sm={7}>
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(CreditToken) ? (parseFloat(CreditToken)/1e18).toFixed(4) : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(CreditToken) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(CreditToken)/1e18) * 10000) / 10000 : '0.00'}/>
                                                 </div>
                                             </Col>
                                         </Row>
@@ -447,8 +564,8 @@ const approveJOKER = async() =>{
                                         </div>
                                         <div className="d-flex mb-1 align-items-center justify-content-between text-md">
                                             <span>You will receive</span>
-                                            <strong className='font-semibold'>{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : parseFloat(CreditToken/1e18).toFixed(2)} DIME + 
-                                            &nbsp;{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : parseFloat(CreditToken/1e18).toFixed(2)} CREDITS</strong>
+                                            <strong className='font-semibold'>{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : Math.floor(formatNumberWithDynamicDecimals(parseFloat(DimeToken/1e9)) * 100) / 100} DIME + 
+                                            &nbsp;{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : Math.floor(formatNumberWithDynamicDecimals(parseFloat(CreditToken/1e18)) * 100) / 100} CREDITS</strong>
                                         </div>
                                         
                                         {/* <div className="d-flex mb-1 align-items-center justify-content-between text-md">
@@ -459,6 +576,16 @@ const approveJOKER = async() =>{
 
                                     <Row className='flex-nowrap align-items-center gx-3'>
                                         <Col>
+                                        {!localStorage.getItem("walletAddress") ? <>
+                                            // If wallet is not connected, show a button to connect wallet
+                                            <ButtonLoad
+                                                loading={false} // You may set loading to true if needed
+                                                className='btn w-100 btn-blue mb-20'
+                                                onClick={handleShow} // Replace with your actual connect wallet function
+                                            >
+                                                Connect Wallet
+                                            </ButtonLoad>
+                                        </> : <>
                                         {!daiAmount ? <>
                                             <ButtonLoad
                                               loading={loadMint}
@@ -479,6 +606,7 @@ const approveJOKER = async() =>{
                                                   : 'Approve JOKER'
                                                 : 'Approve DAI'}
                                             </ButtonLoad>
+                                        </>}
                                         </>}
                                         {/* {allowan > daiAmount ? 
                                         (<>
@@ -780,6 +908,21 @@ const approveJOKER = async() =>{
                     </ButtonLoad>
                 </Modal.Body>
                 </center>
+            </Modal>
+            <Modal show={show} className="modal-dashboard" centered onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Connect to a wallet</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Button variant='gray' className='d-flex p-3 mb-20 justify-content-between w-100 align-items-center' onClick={()=>isCoinbaseInstalled()}>
+                        <span className='text-white'>Coinbase Wallet</span>
+                        <img src={Coinbase} alt="Coinbase Wallet" />
+                    </Button>
+                    <Button variant='gray' className='d-flex p-3 justify-content-between w-100 align-items-center' onClick={()=>isMetaMaskInstalled()}>
+                        <span className='text-white'>MetaMask Wallet</span>
+                        <img src={MetaMask} alt="MetaMask Wallet" />
+                    </Button>
+                </Modal.Body>
             </Modal>
             </Container>
         </Layout>
