@@ -24,7 +24,9 @@ import creditscoin from '../../assets/images/creditscoin.png';
 
 import { updatealgobalance } from "../formula";
 import { BondAbi, BondAddress, CREDITChainlinkAddress, ChainLinkABi, DAIAddress, DIMEAddress, DIMEChainlinkAddress, DaiAbi, DimeAbi, DimeContractABI, JOKERAddress, JOKERCOntractABI, JOKERChainlinkAddress, JUSDAbi, JUSDAddress, JUSDPoolAbi, JUSDPoolAddress, TreasuryAbi, TreasuryAddress, TreasuryContractABI, USDCAddress, USDCChainlinkAddress, USDCContractABI } from '../../abi/abi';
+import { bondContract, jokerTokenbond, dimeTokenbond, daiTokenbond, bondContractabi, jokerTokenbondabi, dimeTokenbondabi, daiTokenbondabi, treasurybondcontract, treasurybondabi} from '../../abi/abi';
 import { ethers } from 'ethers';
+import PurchaseBond from './PurchasedBonds';
 /* global BigInt */
 
 const algosdk = require('algosdk');
@@ -137,7 +139,8 @@ const Bond = () => {
     let usdcID = parseInt(bondDetails.usdcID);
     let elemID = parseInt(bondDetails.elemID);
     let escrowCompiled = bondDetails.bondEscrow;
-
+    const [activeBonds,setActiveBonds] = useState([]);
+    const [bondInfo,setBondInfo] = useState([]);
 
     useEffect(()=>{displayValueCalculation()},[])
 
@@ -147,7 +150,7 @@ const Bond = () => {
       else{
           console.log("useeffect")
         //   const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+        const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
         const provider = new ethers.providers.JsonRpcProvider(url);
           // console.log("Connected Successfully", account);
         //new code
@@ -156,62 +159,66 @@ const Bond = () => {
         const USDCPriceContract = new ethers.Contract(USDCChainlinkAddress, ChainLinkABi, provider);
         const JokerPriceContract = new ethers.Contract(JOKERChainlinkAddress, ChainLinkABi, provider);
         const CreditPriceContract = new ethers.Contract(CREDITChainlinkAddress, ChainLinkABi, provider);
-        const DimeContract = new ethers.Contract(DIMEAddress, DimeContractABI, provider);
-        const USDCContract = new ethers.Contract(USDCAddress, USDCContractABI, provider);
-        const TreasuryContract = new ethers.Contract(TreasuryAddress, TreasuryContractABI, provider);
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERCOntractABI, provider);
+        const DimeContract = new ethers.Contract(dimeTokenbond, dimeTokenbondabi, provider);
+        const daiContract = new ethers.Contract(daiTokenbond, daiTokenbondabi, provider);
+        const TreasuryContract = new ethers.Contract(treasurybondcontract, treasurybondabi, provider);
+        const JOKERContract = new ethers.Contract(jokerTokenbond, jokerTokenbondabi, provider);
+        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, provider);
+    //     let dimeprice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
+    //    console.log("dimePrice",dimeprice)
+    //     let usdcprice = ethers.utils.formatUnits(await USDCPriceContract.getChainlinkDataFeedLatestAnswer(),0);
 
-        let dimeprice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
-       console.log("dimePrice",dimeprice)
-        let usdcprice = ethers.utils.formatUnits(await USDCPriceContract.getChainlinkDataFeedLatestAnswer(),0);
-
-        // let jokerPrice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
-        let jokerPrice = 10 * 10e8;//for now it is given as 10$
-        let Creditprice = ethers.utils.formatUnits(await CreditPriceContract.getChainlinkDataFeedLatestAnswer(),0);
-        setdimePrice(dimeprice);
-        setJokerPrice(jokerPrice);
-        setUSDCPrice(usdcprice) 
+    //     // let jokerPrice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
+    //     let jokerPrice = 10 * 10e8;//for now it is given as 10$
+    //     let Creditprice = ethers.utils.formatUnits(await CreditPriceContract.getChainlinkDataFeedLatestAnswer(),0);
+    //     setdimePrice(dimeprice);
+    //     setJokerPrice(jokerPrice);
+    //     setUSDCPrice(usdcprice) 
         
-        let allowance =  ethers.utils.formatUnits(await USDCContract.allowance(localStorage.getItem("walletAddress"),DIMEAddress),0);
+        let allowance =  ethers.utils.formatUnits(await daiContract.allowance(localStorage.getItem("walletAddress"),bondContract),0);
         console.log("allowance", allowance)
         setAllowance(allowance);
-        let allowance2 =  ethers.utils.formatUnits(await JOKERContract.allowance(localStorage.getItem("walletAddress"),DIMEAddress),0);
-        console.log("allowance", allowance)
+        let allowance2 =  ethers.utils.formatUnits(await JOKERContract.allowance(localStorage.getItem("walletAddress"),bondContract),0);
+        console.log("allowance", allowance2)
         setAllowance2(allowance2);
 
-        let timeduration = ethers.utils.formatUnits(await DimeContract.timeDuration(),0);
-        setTimeDuration(timeduration);          
-        let blackpurchased = await DimeContract.users(localStorage.getItem("walletAddress"));
-        setblackPurchased(blackpurchased);
+        // let timeduration = ethers.utils.formatUnits(await DimeContract.timeDuration(),0);
+        // setTimeDuration(timeduration);          
+        // let blackpurchased = await DimeContract.users(localStorage.getItem("walletAddress"));
+        // setblackPurchased(blackpurchased);
 
-        setClaimedTime(ethers.utils.formatUnits(blackpurchased.claimedTime,0))
-        setDepoitTime(ethers.utils.formatUnits(blackpurchased.depositTime,0));
-        setUserReward(ethers.utils.formatUnits(blackpurchased.userRewards,0))
-        console.log("userRewards",ethers.utils.formatUnits(blackpurchased.userRewards,0))
-        setClaimedAmount(ethers.utils.formatUnits(blackpurchased.claimedAmount,0))
-        console.log("blackpurchased",blackPurchased);
-        let rtime = ethers.utils.formatUnits(blackpurchased.claimedTime,0);
-        let xtime = ethers.utils.formatUnits(blackpurchased.depositTime,0);
-          if(rtime > 0){
-            let s = parseInt(rtime) + parseInt(timeduration)
-            setrewardtime(s)
-        }
-        else{
-            let s = parseInt(xtime) + parseInt(timeduration)
-            setrewardtime(s)
-        }
+        // setClaimedTime(ethers.utils.formatUnits(blackpurchased.claimedTime,0))
+        // setDepoitTime(ethers.utils.formatUnits(blackpurchased.depositTime,0));
+        // setUserReward(ethers.utils.formatUnits(blackpurchased.userRewards,0))
+        // console.log("userRewards",ethers.utils.formatUnits(blackpurchased.userRewards,0))
+        // setClaimedAmount(ethers.utils.formatUnits(blackpurchased.claimedAmount,0))
+        // console.log("blackpurchased",blackPurchased);
+        // let rtime = ethers.utils.formatUnits(blackpurchased.claimedTime,0);
+        // let xtime = ethers.utils.formatUnits(blackpurchased.depositTime,0);
+        //   if(rtime > 0){
+        //     let s = parseInt(rtime) + parseInt(timeduration)
+        //     setrewardtime(s)
+        // }
+        // else{
+        //     let s = parseInt(xtime) + parseInt(timeduration)
+        //     setrewardtime(s)
+        // }
 
-        let daibalance = ethers.utils.formatUnits(await USDCContract.balanceOf(localStorage.getItem("walletAddress")),0);
+        let daibalance = ethers.utils.formatUnits(await daiContract.balanceOf(localStorage.getItem("walletAddress")),0);
           setdaiBlance(daibalance)  
           let Jokerbalance = ethers.utils.formatUnits(await JOKERContract.balanceOf(localStorage.getItem("walletAddress")),0);
           setJokerBlance(Jokerbalance)  
 
+        let treasurBalance1 = ethers.utils.formatUnits(await TreasuryContract.totalReserves(),0);
+        
+        let treasurBalanceinDai = ethers.utils.formatUnits(await DimeBondContract.getDimeInDai(treasurBalance1),0);
+        console.log("bal:", treasurBalanceinDai);
+        setTreasuryDollarvalue(treasurBalanceinDai);
+        // let TrdimeBalance = ethers.utils.formatUnits(await TreasuryContract.getDimeBalance(),0)
+        // let TrUSDTBalance = ethers.utils.formatUnits(await TreasuryContract.getUsdtBalance(),0)
 
-        let TrdimeBalance = ethers.utils.formatUnits(await TreasuryContract.getDimeBalance(),0)
-        let TrUSDTBalance = ethers.utils.formatUnits(await TreasuryContract.getUsdtBalance(),0)
-
-        let treasuryTotalValueinUSD = TrdimeBalance*dimeprice + TrUSDTBalance*usdcprice
-        setTreasuryDollarvalue(treasuryTotalValueinUSD);
+        // let treasuryTotalValueinUSD = TrdimeBalance*dimeprice + TrUSDTBalance*usdcprice
+        // setTreasuryDollarvalue(treasuryTotalValueinUSD);
     
         //old one
   
@@ -255,12 +262,42 @@ const Bond = () => {
         //     let s = parseInt(xtime) + parseInt(timeduration)
         //     setrewardtime(s)
         // }
+        await getBondInfo();
+        
         
 
 
 
-
       }
+    }
+
+    const getBondInfo = async() => {
+        const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+        const provider = new ethers.providers.JsonRpcProvider(url);
+        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, provider);
+        let userbonds = await DimeBondContract.getActiveBonds(localStorage.getItem('walletAddress'));
+        setActiveBonds(userbonds);
+        let bondInfo1 = [];
+        console.log(" active bonds:", userbonds);
+        
+            for (const bond of userbonds) {
+                console.log("new bond:");
+                // Access properties of each bond object
+                let bondresult = await bonfInfo(bond._hex);
+                bondInfo1.push(bondresult);
+                // Add more properties as needed
+            }
+            setBondInfo(bondInfo1);
+            console.log("bonds:", bondInfo1);
+    }
+    const bonfInfo = async(bondNumber) => {
+        const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+        const provider = new ethers.providers.JsonRpcProvider(url);
+        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, provider);
+        const bigNumberObject = ethers.BigNumber.from(bondNumber);
+        const result = await DimeBondContract.bondInfo(localStorage.getItem('walletAddress'), bigNumberObject.toNumber());
+        console.log(" bondInfo:", result);
+        return result;
     }
 
     // console.log("bond",blackPurchased.claimedAmount?ethers.utils.formatUnits(blackPurchased.claimedAmount,18) :0)
@@ -423,7 +460,7 @@ const purchaseBond = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const DimeContract = new ethers.Contract(DIMEAddress, DimeContractABI, web31.getSigner(account));
+        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, web31.getSigner(account));
 
         // const val = ethers.utils.formatUnits(100000000000000, 0);
         // let k = Web3.utils.toBN(1000000000000000000n);
@@ -431,12 +468,12 @@ const purchaseBond = async() =>{
         // const val1 =  ethers.utils.parseUnits(val11, 18);;
         // Send the transaction and wait for it to be mined
       
-        const mintTx = await DimeContract.participateInBond(BigInt(parseInt(bondAmount)),BigInt(parseInt(JokerInput)));
+        const mintTx = await DimeBondContract.deposit(BigInt(parseInt(bondAmount)),BigInt(1000), localStorage.getItem("walletAddress"));
         await mintTx.wait();
       
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         await displayValueCalculation()
         toast.success("Bond purchased successfully");
@@ -462,14 +499,14 @@ const approve = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const USdcContract = new ethers.Contract(USDCAddress, USDCContractABI, web31.getSigner(account));
+        const daiContract = new ethers.Contract(daiTokenbond, daiTokenbondabi, web31.getSigner(account));
 
-        const mintTx = await USdcContract.approve(DIMEAddress,BigInt(10000000000*1e9));
+        const mintTx = await daiContract.approve(bondContract,BigInt(10000000000*1e9));
       
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
         await sleep(2000);
         toast.success(toastDiv(id));
        
@@ -496,14 +533,14 @@ const approveJOKER = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERCOntractABI, web31.getSigner(account));
+        const JOKERContract = new ethers.Contract(jokerTokenbond, jokerTokenbondabi, web31.getSigner(account));
 
-        const mintTx = await JOKERContract.approve(DIMEAddress,BigInt(10000000000*1e9));
+        const mintTx = await JOKERContract.approve(bondContract,BigInt(10000000000*1e9));
       
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
         await sleep(2000);
         toast.success(toastDiv(id));
         
@@ -562,6 +599,26 @@ const changeInputValue = async(value) =>{
     console.log("calculated",calculatedValue,Math.abs(calculatedValue)*JokerPrice,value*1e9*USDCPrice);
     setJokerInput((Math.abs(calculatedValue)));
     
+}
+
+const changeInputValue2 = async(value) => {
+    setBondAmount(value*1e18);
+    const web31 = await connectToEthereum();
+        if (!web31) return;
+
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const account = accounts[0]; // Use the first account
+
+        console.log("Connected Successfully", account);
+
+        // Create contract instance with the correct order of arguments
+        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, web31.getSigner(account));
+        let result = await DimeBondContract.depositchecker(BigInt(value*1e18));
+        const bigNumberObject = ethers.BigNumber.from((result[3])._hex);
+        console.log(result);
+        console.log(bigNumberObject.toNumber());
+        setJokerInput(bigNumberObject.toNumber());
+        await displayValueCalculation();
 }
 
     return (
@@ -677,13 +734,13 @@ const changeInputValue = async(value) =>{
                                         Purchased
                                     </h6>
                                     <h5 className='mb-0 d-flex align-items-center'>
-                                        {ClaimedAmount?parseFloat(ClaimedAmount/1e9).toFixed(4) :0}
+                                        {activeBonds.length > 0 ? activeBonds.length :0}
                                         <OverlayTrigger
                                 key="left"
                                 placement="left"
                                 overlay={
                                     <Tooltip id={`tooltip-left`}>
-                                        Total DIME purchased in bond represented .
+                                        Total no. of Active Bonds is represented .
                                     </Tooltip>
                                 }
                                 >
@@ -735,7 +792,7 @@ const changeInputValue = async(value) =>{
                             
                                 <Tab eventKey="bond" title="Bond">
                                     <Row className='row-divider'>
-                                        <Col md={3}>
+                                        <Col md={4}>
                                             <h6><span className='text-sm text-gray-d'>Your USDC Balance: </span>{daiBlance ? (parseFloat(daiBlance)/1e9).toFixed(4) : '0'} USDC</h6>
                                             <Row className='flex-nowrap mb-2 gx-3'>
                                             <Col> <div className="acc-title me-2 d-flex ">
@@ -750,7 +807,7 @@ const changeInputValue = async(value) =>{
                                                             placeholder="0.00"
                                                             aria-label="Recipient's username"
                                                             aria-describedby="basic-addon2"
-                                                            onChange={(e) => changeInputValue(e.target.value)}
+                                                            onChange={(e) => changeInputValue2(e.target.value)}
                                                         />
                                                         {/* <Button variant="outline-purple" className='btn-xs-d' onClick={maxButton}>Max</Button> */}
                                                     </InputGroup>
@@ -774,7 +831,7 @@ const changeInputValue = async(value) =>{
                                                 </div>
                                             </div> */}
                                         </Col>
-                                        <Col md={3}>
+                                        <Col md={4}>
                                             <h6><span className='text-sm text-gray-d'>Your JOKER Balance: </span>{JokerBlance ? (parseFloat(JokerBlance)/1e9).toFixed(4) : '0'} JOKER</h6>
                                             <Row className='flex-nowrap mb-2 gx-3'>
                                             <Col> <div className="acc-title me-2 d-flex ">
@@ -800,14 +857,14 @@ const changeInputValue = async(value) =>{
                                             </Row>
                                           
                                         </Col>
-                                        <Col md={3}>
+                                        <Col md={4}>
                                             {/* <h6><span className='text-sm text-gray-d'>Your USDC Balance: </span>{daiBlance ? (parseFloat(daiBlance)/1e18).toFixed(4) : '0'} DAI</h6> */}
                                             <Row className='flex-nowrap mb-2 gx-3'>
                                             
                                                 
                                                 <Col >
                                                 <br/>
-                                                {allowan > bondAmount ?( allowan2 > JokerInput ? 
+                                                {allowan >= bondAmount ?( allowan2 >= JokerInput ? 
                                                     (<><ButtonLoad loading={loaderPurchase} className='btn btn-blue' onClick={purchaseBond}>
                                                         Purchase Bond
                                                     </ButtonLoad></>) :
@@ -831,10 +888,10 @@ const changeInputValue = async(value) =>{
                                             </Row>
                                           
                                         </Col>
-                                        <Col md={3}>
+                                        {/* <Col md={3}>
                                             <h6><span className='text-sm text-gray-d'>Claimable Rewards: </span> {UserReward?parseFloat(UserReward/1e9).toFixed(4) :0} DIME</h6>
-                                            <Row className='flex-nowrap align-items-center mb-2 gx-3'>
-                                              <Col>
+                                            <Row className='flex-nowrap align-items-center mb-2 gx-3'> */}
+                                              {/* <Col>
 {ClaimedTime ? 
 (<>
 {parseInt(UserReward) >1e4  ? 
@@ -860,7 +917,7 @@ const changeInputValue = async(value) =>{
   
 </>):(<>
     <ButtonLoad disabled={true} className='btn w-100 btn-blue' >Claim </ButtonLoad>
-</>)}
+</>)} */}
                                               
                                                 {/* {ethers.utils.formatUnits(blackPurchased.userRewards,18) == true ? <Button disabled className='btn w-100 btn-blue'>
                                                         Claim
@@ -869,8 +926,8 @@ const changeInputValue = async(value) =>{
                                                     </ButtonLoad> : <Button disabled className='btn w-100 btn-blue'>
                                                         Claim
                                                     </Button>} */}
-                                                </Col>
-                                                <Col xs="auto">
+                                                {/* </Col>
+                                                <Col xs="auto"> */}
                                                 {/* {appOpt === false ? <><ButtonLoad loading={loaderAppOpt} className='btn w-40 btn-blue' onClick={appOptinWalletCheck}>
                                                         App Optin
                                                     </ButtonLoad>&nbsp;</> : <><Button disabled className='btn w-40 btn-blue'>
@@ -881,7 +938,7 @@ const changeInputValue = async(value) =>{
                                                     </ButtonLoad> : <><Button disabled className='btn w-40 btn-blue'>
                                                         Asset Opted
                                                     </Button></> } */}
-                                                </Col>
+                                                {/* </Col>
                                                 <Col xs="auto">
                                                 <OverlayTrigger
                                                     key="left"
@@ -897,9 +954,9 @@ const changeInputValue = async(value) =>{
                                                 </Col>
                                             </Row>
                                             <div className="d-flex">
-                                                <div>
+                                                <div> */}
                                                     {/* <h6><span className='text-sm mb-1 d-block text-gray-d'>Pending Rewards</span> {(parseFloat(bond)/1000000).toFixed(2) === 'NaN' ? <>{0.00}</>:(parseFloat(bond)/1000000).toFixed(2)} ELEM</h6> */}
-                                                </div>
+                                                {/* </div>
                                                 <div className='ms-4'>
                                                     {rewardtime ? (<>
                                                         <h6><span className='text-sm mb-1 d-block text-gray-d'>Time until for next claim</span> {lock == true ? (<>{day}d:{hour}h:{min}m:{sec}s</>):(<></>)} </h6>
@@ -907,8 +964,21 @@ const changeInputValue = async(value) =>{
                                                     
                                                 </div>
                                             </div>
-                                        </Col>
+                                        </Col> */}
+                                        
                                     </Row>
+                                </Tab>
+                                <Tab eventKey="Purchased" title="Purchased">
+                                    {bondInfo.map((item, index) => {
+                                        return (
+                                        <React.Fragment key={index}>
+                                        <PurchaseBond info={item} bondcount={activeBonds[index]._hex}/>
+                                        {/* <br/> */}
+                                        {/* <br/> */}
+                                        <hr/>
+                                        </React.Fragment>
+                                        );
+                                    })}
                                 </Tab>
                             </Tabs>
                         </Accordion.Body>
