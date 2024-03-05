@@ -461,7 +461,7 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>DAI</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(daiBalances) ? formatNumberWithDynamicDecimals(parseFloat(daiBalances)/1e18) : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(daiBalances) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(daiBalances)/1e18) * 100) / 100 : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
@@ -491,13 +491,13 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>JOKER</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(JokerBalance) ? formatNumberWithDynamicDecimals(parseFloat(JokerBalance)/1e9) : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(JokerBalance) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(JokerBalance)/1e9) * 10000) / 10000 : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
                                             <Col sm={7}>
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(JokerInput) ? formatNumberWithDynamicDecimals(parseFloat(JokerInput)/1e9) : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(JokerInput) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(JokerInput)/1e9) * 10000) / 10000 : '0.00'}/>
                                                 </div>
                                             </Col>
                                          
@@ -515,13 +515,13 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>DIME</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(dimeBalance) ? formatNumberWithDynamicDecimals(parseFloat(dimeBalance)/1e9) : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(dimeBalance) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(dimeBalance)/1e9) * 10000) / 10000 : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
                                             <Col sm={7}>
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(DimeToken) ? formatNumberWithDynamicDecimals(parseFloat(DimeToken)/1e9) : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(DimeToken) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(DimeToken)/1e9) * 10000) / 10000 : '0.00'}/>
                                                 </div>
                                             </Col>
                                         </Row>
@@ -535,13 +535,13 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>CREDITS</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(creditsBalance) ? formatNumberWithDynamicDecimals(parseFloat(creditsBalance)/1e18) : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(creditsBalance) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(creditsBalance)/1e18) * 10000) / 10000 : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
                                             <Col sm={7}>
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(CreditToken) ? formatNumberWithDynamicDecimals(parseFloat(CreditToken)/1e18) : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(CreditToken) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(CreditToken)/1e18) * 10000) / 10000 : '0.00'}/>
                                                 </div>
                                             </Col>
                                         </Row>
@@ -564,8 +564,8 @@ const approveJOKER = async() =>{
                                         </div>
                                         <div className="d-flex mb-1 align-items-center justify-content-between text-md">
                                             <span>You will receive</span>
-                                            <strong className='font-semibold'>{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : formatNumberWithDynamicDecimals(parseFloat(CreditToken/1e18))} DIME + 
-                                            &nbsp;{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : formatNumberWithDynamicDecimals(parseFloat(CreditToken/1e18))} CREDITS</strong>
+                                            <strong className='font-semibold'>{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : Math.floor(formatNumberWithDynamicDecimals(parseFloat(DimeToken/1e9)) * 100) / 100} DIME + 
+                                            &nbsp;{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : Math.floor(formatNumberWithDynamicDecimals(parseFloat(CreditToken/1e18)) * 100) / 100} CREDITS</strong>
                                         </div>
                                         
                                         {/* <div className="d-flex mb-1 align-items-center justify-content-between text-md">
