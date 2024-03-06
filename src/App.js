@@ -50,6 +50,7 @@ import BuybackApp from './components/DashboardNew/Buyback'
 import RecollateralizeApp from './components/DashboardNew/Recollateralize'
 import StablecoinApp from './components/DashboardNew/Stablecoin';
 import MintingApp from './components/DashboardNew/MintCredit&DIME';
+import RolloverApp from './components/DashboardNew/Rollover';
 import RedeemApp from './components/DashboardNew/StablecoinRedeem';
 import DashboardApp from './components/DashboardNew/Dashboard';
 import DashboardMainApp from './components/DashboardNew/DashboardJoker';
@@ -154,6 +155,9 @@ function App() {
         </Route>
         <Route path="/minting">
           <MintingApp />
+        </Route>
+        <Route path="/rollover">
+          <RolloverApp />
         </Route>
         <Route path="/controlledswap">
           <ControlledSwap />
