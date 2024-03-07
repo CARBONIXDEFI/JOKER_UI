@@ -52,6 +52,7 @@ import StablecoinApp from './components/DashboardNew/Stablecoin';
 import MintingApp from './components/DashboardNew/MintCredit&DIME';
 import RolloverApp from './components/DashboardNew/Rollover';
 import RedeemApp from './components/DashboardNew/StablecoinRedeem';
+import GenesiMint from './components/DashboardNew/GenesisMint';
 import DashboardApp from './components/DashboardNew/Dashboard';
 import DashboardMainApp from './components/DashboardNew/DashboardJoker';
 import DashboardAdminMainApp from './components/DashboardNew/DashboardJokerAdmin';
@@ -155,6 +156,9 @@ function App() {
         </Route>
         <Route path="/minting">
           <MintingApp />
+        </Route>
+        <Route path="/genesismint">
+          <GenesiMint />
         </Route>
         <Route path="/rollover">
           <RolloverApp />
