@@ -23,6 +23,7 @@ import node from './nodeapi.json';
 import dashboardDetails from '../Dashboard/stablecoin-only.json';
 import config from '../../NFTFolder/config.json'
 import axios from 'axios';
+import { VisitHistoryPost } from '../../api/api';
 
 import jokercoin from '../../assets/images/Jokercoin.png';
 import stasiscoin  from '../../assets/images/stasiscoin.png';
@@ -41,6 +42,28 @@ const Dashboard = () => {
 
     useEffect(() => {
         document.title = "JOKER | Dashboard"
+        // Function to post visit history
+        const postVisitHistoryData = async () => {
+            try {
+                const walletAddress = localStorage.getItem("walletAddress") || "";
+                const pageName = "MainDashboard"; // Replace with the actual page name
+
+                const response = await VisitHistoryPost(walletAddress, pageName);
+
+                if (response) {
+                    // Handle success if needed
+                    // console.log("Visit history successfully posted:", response);
+                } else {
+                    // Handle failure if needed
+                    // console.error("Failed to post visit history:", response);
+                }
+            } catch (error) {
+                // console.error("Error occurred while posting visit history:", error);
+            }
+        };
+
+        // Call the function to post visit history
+        postVisitHistoryData();
     }, [])
 
     const [einrCir, setEinrCir] = useState("");
