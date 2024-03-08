@@ -33,7 +33,12 @@ import MyAlgoConnect from '@randlabs/myalgo-connect';
 
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
-import { DIMEAddress, DimeContractABI, JOKERAddress, JOKERCOntractABI, JOKERABI2 } from '../../abi/abi';
+
+import { CREDITS_Token_ABI, CREDITS_Token_Address, 
+  DAI_TOKEN_ABI, DAI_TOKEN_Address, 
+  DIME_Token_ABI, DIME_Token_Address,  
+  JOKER_Token_ABI, JOKER_Token_Address} from '../../abi/ABI&ContractAddress';
+
 // import { useWeb3Modal } from '@web3modal/scaffold-react'; 
 // import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react';
 
@@ -56,8 +61,8 @@ const Header = (props) => {
     const handleShow = () => setShow(true);
     const [ethBalance, setEthBalance] = useState();
 
-    const[jokBalan,setJokerBalan] = useState("");
-    const[dimebalan,setDimeBalan] = useState("");
+    const[JokerBalance,setJokerBalance] = useState("");
+    const[DimeBalance,setDimeBalance] = useState("");
 
     const handleConnectedClose = () => setConnectedShow(false);
     const handleConnectedShow = () => setConnectedShow(true);
@@ -454,31 +459,29 @@ async function ConnectWallet() {
         return Boolean(ethereum && ethereum.Coinbase);
     };
 
-    const walletBalance = async(props) => {
+    const walletBalance = async() =>{
       if(localStorage.getItem("walletAddress") === null || localStorage.getItem("walletAddress") === undefined || localStorage.getItem("walletAddress") === ''){                
       }
       else{
-      const response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=balance&address=${walletAddress}&tag=latest`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      let balanceWei;
-      const data = await response.json();
-      if (data.status === '1') {
-        balanceWei = data.result;
-      } else {
-        throw new Error('API response was not successful');
-      }
-      setEthBalance(parseFloat(balanceWei/1e18).toFixed(5))
+          console.log("useeffect")
+          // const provider = new ethers.providers.Web3Provider(window.ethereum)
+          const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+          const provider = new ethers.providers.JsonRpcProvider(url);
+      
+      const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, provider);
+      const dimeContract = new ethers.Contract(DIME_Token_Address, DIME_Token_ABI, provider);
+      const eth = await provider.getBalance(localStorage.getItem("walletAddress"));
 
-      const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
-        const provider = new ethers.providers.JsonRpcProvider(url);
-        const jokercontract = new ethers.Contract(JOKERAddress,JOKERABI2,provider);
-        const dimecontract = new ethers.Contract(DIMEAddress,DimeContractABI,provider);
-
-        setJokerBalan(ethers.utils.formatUnits(await jokercontract.balanceOf(localStorage.getItem("walletAddress")),9));
-        setDimeBalan(ethers.utils.formatUnits(await dimecontract.balanceOf(localStorage.getItem("walletAddress")),9));
-        
+      // let daibalance = ethers.utils.formatUnits(await daiContract.balanceOf(localStorage.getItem("walletAddress")),0);
+      // setDaiBalances(daibalance)  
+      let Jokerbalance = ethers.utils.formatUnits(await JOKERContract.balanceOf(localStorage.getItem("walletAddress")),9);
+      setJokerBalance(Jokerbalance)
+      let dimebalance = ethers.utils.formatUnits(await dimeContract.balanceOf(localStorage.getItem("walletAddress")),9);
+      setDimeBalance(dimebalance)  
+      let etherBalance = ethers.utils.formatUnits(eth, 18);
+      setEthBalance(etherBalance);
+      // let creditsbalance = ethers.utils.formatUnits(await creditsContract.balanceOf(localStorage.getItem("walletAddress")),0);
+      // setCreditsBalance(creditsbalance)  
       }
     }
       useEffect(() => {
@@ -543,9 +546,9 @@ async function ConnectWallet() {
                                    Connect wallet
                                </Button></> :
                            <> <Button className='btn btn-blue d-sm-block d-none'>
-                           {jokBalan ? <>{parseFloat(jokBalan).toFixed(3)} </> : "0"}  <img src={jokercoin} width={25} height={25}></img></Button>&nbsp;&nbsp;<Button className='btn btn-blue d-sm-block d-none'>
-                           {dimebalan ? <>{parseFloat(dimebalan).toFixed(3)} </> : "0"}  <img src={stasiscoin} width={25} height={25}></img></Button>&nbsp;&nbsp;<Button className='btn btn-blue d-sm-block d-none'>
-                           {ethBalance ? <>{ethBalance} </> : "0"}  ETH</Button>&nbsp;&nbsp; <Button className='btn btn-blue d-sm-block d-none' onClick={()=>disConnectWallet()}>
+                           {JokerBalance ? <>{parseFloat(JokerBalance).toFixed(3)} </> : "0"}  <img src={jokercoin} width={25} height={25}></img></Button>&nbsp;&nbsp;<Button className='btn btn-blue d-sm-block d-none'>
+                           {DimeBalance ? <>{parseFloat(DimeBalance).toFixed(3)} </> : "0"}  <img src={stasiscoin} width={25} height={25}></img></Button>&nbsp;&nbsp;<Button className='btn btn-blue d-sm-block d-none'>
+                           {ethBalance ? <>{parseFloat(ethBalance).toFixed(3)} </> : "0"}  ETH</Button>&nbsp;&nbsp; <Button className='btn btn-blue d-sm-block d-none' onClick={()=>disConnectWallet()}>
                            <svg width="20" height="20" className='me-2 ms-0' viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg"><path d="M21 18V19C21 20.1 20.1 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.9 3.89 3 5 3H19C20.1 3 21 3.9 21 5V6H12C10.89 6 10 6.9 10 8V16C10 17.1 10.89 18 12 18H21ZM12 16H22V8H12V16ZM16 13.5C15.17 13.5 14.5 12.83 14.5 12C14.5 11.17 15.17 10.5 16 10.5C16.83 10.5 17.5 11.17 17.5 12C17.5 12.83 16.83 13.5 16 13.5Z"></path></svg>
                            {(localStorage.getItem("walletAddress")).substring(0, 4)}...{(localStorage.getItem("walletAddress")).substring((localStorage.getItem("walletAddress")).length -4, (localStorage.getItem("walletAddress")).length)}
                        </Button>

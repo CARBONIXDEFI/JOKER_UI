@@ -5,6 +5,7 @@ import { updatealgobalance } from "../formula";
 
 import ButtonLoad from 'react-bootstrap-button-loader';
 import USDC from '../../assets/images/usdc.jpg';
+import DAI from '../../assets/images/dai.jpeg';
 import MyAlgoConnect from '@randlabs/myalgo-connect';
 import { ToastContainer, Toast, Zoom, Bounce, toast} from 'react-toastify';
 import Logo from '../../assets/images/modal-logo.png';
@@ -724,8 +725,8 @@ const einrFundWalletCheck = async () =>
                     <Accordion.Item className='mb-24' eventKey="0">
                         <Accordion.Header>
                             <div className="acc-title me-2 d-flex align-items-center">
-                                <img src={USDC} alt="logo" />
-                                <span className='ms-3'>USDC</span>
+                                <img src={DAI} alt="logo" />
+                                <span className='ms-3'>DAI</span>
                             </div>
 
                             <div className="ms-auto flex-grow-1 pe-md-4 justify-content-between d-flex align-items-center">
@@ -734,7 +735,7 @@ const einrFundWalletCheck = async () =>
                                         You will Receive
                                     </h6>
                                     <h5 className='mb-0 d-flex align-items-center'>
-                                        5 USDC
+                                        5 DAI
                                         <OverlayTrigger
                                             key="left"
                                             placement="left"
@@ -753,13 +754,13 @@ const einrFundWalletCheck = async () =>
                                         Balance
                                     </h6>
                                     <h5 className='mb-0 d-flex align-items-center'>
-                                    {(parseFloat(usdcBlance)/1e9).toFixed(2) === 'NaN' || (parseFloat(usdcBlance)/1e9).toFixed(2) === null ? '0.00' : (parseFloat(usdcBlance)/1e9).toFixed(2)} USDC
+                                    {(parseFloat(usdcBlance)/1e18).toFixed(2) === 'NaN' || (parseFloat(usdcBlance)/1e18).toFixed(2) === null ? '0.00' : (parseFloat(usdcBlance)/1e18).toFixed(2)} DAI
                                         <OverlayTrigger
                                             key="left"
                                             placement="left"
                                             overlay={
                                                 <Tooltip id={`tooltip-left`}>
-                                                    Your Account's USDC balance.
+                                                    Your Account's DAI balance.
                                                 </Tooltip>
                                             }
                                             >
@@ -835,7 +836,7 @@ const einrFundWalletCheck = async () =>
                             </div> */}
                             <Tabs defaultActiveKey="bond" className='dashboard-tabs' id="tab-example-1">
                             
-                                <Tab eventKey="bond" title="USDC Faucet">
+                                <Tab eventKey="bond" title="DAI Faucet">
                                     <Row className='row-divider'>
                                         {/* <Col>
                                             <h6><span className='text-sm text-gray-d'>Your USDC Balance: </span>{(parseFloat(usdcBalances)/1000000).toFixed(2) === 'NaN' || (parseFloat(usdcBalances)/1000000).toFixed(2) === null ? '0.00' : (parseFloat(usdcBalances)/1000000).toFixed(2)} USDC</h6>
@@ -1083,7 +1084,7 @@ const einrFundWalletCheck = async () =>
                                         Balance
                                     </h6>
                                     <h5 className='mb-0 d-flex align-items-center'>
-                                    {(parseFloat(CreditBlance)/1e9).toFixed(2) === 'NaN' || (parseFloat(CreditBlance)/1e9).toFixed(2) === null ? '0.00' : (parseFloat(CreditBlance)/1e9).toFixed(2)} CREDIT
+                                    {(parseFloat(CreditBlance)/1e18).toFixed(2) === 'NaN' || (parseFloat(CreditBlance)/1e18).toFixed(2) === null ? '0.00' : (parseFloat(CreditBlance)/1e18).toFixed(2)} CREDIT
                                         <OverlayTrigger
                                             key="left"
                                             placement="left"
