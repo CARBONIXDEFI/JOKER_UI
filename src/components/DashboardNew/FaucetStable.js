@@ -22,8 +22,9 @@ import creditscoin from '../../assets/images/creditscoin.png';
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
-import { CREDITAddress, CreditcontractAbi, DIMEAddress, DimeContractABI, FaucetAddress, FaucetContractABI, JOKERAddress, JOKERCOntractABI, TreasuryAddress, TreasuryContractABI, USDCAddress, USDCContractABI } from '../../abi/abi';
+// import { CREDITAddress, CreditcontractAbi, DIMEAddress, DimeContractABI, FaucetAddress, FaucetContractABI, JOKERAddress, JOKERCOntractABI, TreasuryAddress, TreasuryContractABI, USDCAddress, USDCContractABI } from '../../abi/abi';
 import { ethers } from 'ethers';
+import { CREDITS_Token_ABI, CREDITS_Token_Address, DAI_TOKEN_ABI, DAI_TOKEN_Address, DIME_Token_ABI, DIME_Token_Address, Faucet_ABI, Faucet_Address, JOKER_Token_ABI, JOKER_Token_Address } from '../../abi/ABI&ContractAddress';
 /* global BigInt */
 
 const algosdk = require('algosdk');
@@ -174,17 +175,18 @@ const algodClientGet = new algosdk.Algodv2('', node['algodclient'], '');
       }
       else{
           console.log("useeffect")
-          const provider = new ethers.providers.Web3Provider(window.ethereum)
+          const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+          const provider = new ethers.providers.JsonRpcProvider(url);
           // console.log("Connected Successfully", account);
         //new code
 
-        const FaucetContract = new ethers.Contract(FaucetAddress, FaucetContractABI, provider);
+        const FaucetContract = new ethers.Contract(Faucet_Address, Faucet_ABI, provider);
         
-        const DimeContract = new ethers.Contract(DIMEAddress, DimeContractABI, provider);
-        const USDCContract = new ethers.Contract(USDCAddress, USDCContractABI, provider);
-        const TreasuryContract = new ethers.Contract(TreasuryAddress, TreasuryContractABI, provider);
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERCOntractABI, provider);
-        const CreditContract = new ethers.Contract(CREDITAddress, CreditcontractAbi, provider);
+        const DimeContract = new ethers.Contract(DIME_Token_Address, DIME_Token_ABI, provider);
+        const USDCContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, provider);
+        // const TreasuryContract = new ethers.Contract(TreasuryAddress, TreasuryContractABI, provider);
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, provider);
+        const CreditContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, provider);
         
 
         let daibalance = ethers.utils.formatUnits(await USDCContract.balanceOf(localStorage.getItem("walletAddress")),0);
@@ -455,7 +457,7 @@ try {
     console.log("Connected Successfully", account);
 
     // Create contract instance with the correct order of arguments
-    const FaucetContract = new ethers.Contract(FaucetAddress, FaucetContractABI, web31.getSigner(account));
+    const FaucetContract = new ethers.Contract(Faucet_Address, Faucet_ABI, web31.getSigner(account));
 
     const mintTx = await FaucetContract.dispense("USDC");
   
@@ -501,7 +503,7 @@ try {
     console.log("Connected Successfully", account);
 
     // Create contract instance with the correct order of arguments
-    const FaucetContract = new ethers.Contract(FaucetAddress, FaucetContractABI, web31.getSigner(account));
+    const FaucetContract = new ethers.Contract(Faucet_Address, Faucet_ABI, web31.getSigner(account));
 
     const mintTx = await FaucetContract.dispense("DIME");
   
@@ -548,7 +550,7 @@ try {
     console.log("Connected Successfully", account);
 
     // Create contract instance with the correct order of arguments
-    const FaucetContract = new ethers.Contract(FaucetAddress, FaucetContractABI, web31.getSigner(account));
+    const FaucetContract = new ethers.Contract(Faucet_Address, Faucet_ABI, web31.getSigner(account));
 
     const mintTx = await FaucetContract.dispense("CREDIT");
   
@@ -593,7 +595,7 @@ try {
     console.log("Connected Successfully", account);
 
     // Create contract instance with the correct order of arguments
-    const FaucetContract = new ethers.Contract(FaucetAddress, FaucetContractABI, web31.getSigner(account));
+    const FaucetContract = new ethers.Contract(Faucet_Address, Faucet_ABI, web31.getSigner(account));
 
     const mintTx = await FaucetContract.dispense("JOKER");
   

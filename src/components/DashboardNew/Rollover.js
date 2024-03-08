@@ -13,9 +13,10 @@ import stasiscoin  from '../../assets/images/stasiscoin.png';
 import creditscoin from '../../assets/images/creditscoin.png';
 
 import {ethers} from 'ethers';
+import { Chainlink_Oracle_ABI, DAI_TOKEN_ABI, DAI_TOKEN_Address, DIME_Chainlink_Oracle_Address, DIME_Token_ABI, DIME_Token_Address, TAU_Bond_ABI, TAU_Bond_Address, TAU_Chainlink_Oracle_Address, TAU_Token_ABI, TAU_Token_Address } from '../../abi/ABI&ContractAddress';
 
-import { allTokenABI, presaleDCABI, daiTokenForDC, jokerTokenForDC, dimeTokenForDC, creditsTokenForDC, 
-         presaleDCMintProxy, ownerPresaleDC, treasuryPresaleDC, TAU_RO_Address, TAU_RO_ABI, DIME_RO_Address, RolloverAddress, Rollover_ABI } from '../../abi/abi';
+// import { allTokenABI, presaleDCABI, daiTokenForDC, jokerTokenForDC, dimeTokenForDC, creditsTokenForDC, 
+//          presaleDCMintProxy, ownerPresaleDC, treasuryPresaleDC, TAU_RO_Address, TAU_RO_ABI, DIME_RO_Address, RolloverAddress, Rollover_ABI } from '../../abi/abi';
 
 const Stablecoin = () => {
 
@@ -92,7 +93,7 @@ const Stablecoin = () => {
         else{
             console.log("useeffect")
             // const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+            const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
             const provider = new ethers.providers.JsonRpcProvider(url);
             // console.log("Connected Successfully", account);
 
@@ -103,9 +104,9 @@ const Stablecoin = () => {
         // const CreditPriceContract = new ethers.Contract(CREDITChainlinkAddress, ChainLinkABi, provider);
         
         // const JOKERContract = new ethers.Contract(jokerTokenForDC, allTokenABI, provider);
-        const tauContract = new ethers.Contract(TAU_RO_Address, TAU_RO_ABI, provider);
-        const dimeContract = new ethers.Contract(DIME_RO_Address, allTokenABI, provider);
-        const rolloverContract = new ethers.Contract(RolloverAddress, Rollover_ABI, provider);
+        const tauContract = new ethers.Contract(TAU_Token_Address, TAU_Token_ABI, provider);
+        const dimeContract = new ethers.Contract(DIME_Token_Address, DIME_Token_ABI, provider);
+        const rolloverContract = new ethers.Contract(TAU_Bond_Address, TAU_Bond_ABI, provider);
 
         // const MintContractDC = new ethers.Contract(presaleDCMintProxy, presaleDCABI, provider);
         // const ECOReserveContract = new ethers.Contract(ECOReserveAddress, ECOReserveABI, provider);
@@ -124,6 +125,7 @@ const Stablecoin = () => {
         setCreditPrice(999893);
 
         let daibalance = ethers.utils.formatUnits(await tauContract.balanceOf(localStorage.getItem("walletAddress")),0);
+        console.log("daibalance", daibalance)
         setDaiBalances(daibalance)  
         // let Jokerbalance = ethers.utils.formatUnits(await JOKERContract.balanceOf(localStorage.getItem("walletAddress")),0);
         // setJokerBalance(Jokerbalance)
@@ -132,17 +134,20 @@ const Stablecoin = () => {
         // let creditsbalance = ethers.utils.formatUnits(await creditsContract.balanceOf(localStorage.getItem("walletAddress")),0);
         // setCreditsBalance(creditsbalance)  
 
-        let allowance =  ethers.utils.formatUnits(await tauContract.allowance(localStorage.getItem("walletAddress"),RolloverAddress),0);
+        let allowance =  ethers.utils.formatUnits(await tauContract.allowance(localStorage.getItem("walletAddress"),TAU_Bond_Address),0);
         console.log("allowance1", allowance)
         setAllowance(allowance);
-        let allowance2 =  ethers.utils.formatUnits(await dimeContract.allowance(localStorage.getItem("walletAddress"),RolloverAddress),0);
+        let allowance2 =  ethers.utils.formatUnits(await dimeContract.allowance(localStorage.getItem("walletAddress"),TAU_Bond_Address),0);
         console.log("allowance2", allowance2)
         setAllowance2(allowance2);
         }
       }
-
+      const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+      const provider = new ethers.providers.JsonRpcProvider(url);
+      const dimeOracle = new ethers.Contract(DIME_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
+      const TauOracle = new ethers.Contract(TAU_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
       const calculateDimeCreditmint = async(value)=>{
-        const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+        const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
             const provider = new ethers.providers.JsonRpcProvider(url);
         setDaiAmount(value)
         // let calculatedValue = (((value * 1e18) * 20) / (80 * 9998930)) / 1000;
@@ -154,9 +159,9 @@ const Stablecoin = () => {
         // let creditTokenMint = ((reducedTotalDollarvalue * 50) / 100) * 999893 / 1e6; //24 - 6 = 18
         // let dimeTokenMint = (((reducedTotalDollarvalue * 50) / 100) * 999893) / 1e15; //24 - 15 = 9
         // setCreditToken(creditTokenMint);
-        const rolloverContract = new ethers.Contract(RolloverAddress, Rollover_ABI, provider);
-        let dimePrice = ethers.utils.formatUnits(await rolloverContract.PriceOfDime(),0);
-        let tauprice = ethers.utils.formatUnits(await rolloverContract.PriceOfTau(),0);
+       
+        let dimePrice = ethers.utils.formatUnits(await dimeOracle.getChainlinkDataFeedLatestAnswer(),0);
+        let tauprice = ethers.utils.formatUnits(await TauOracle.getChainlinkDataFeedLatestAnswer(),0);
         // let dimePrice = 1e8;
         // let tauprice = 10e8;
 
@@ -171,7 +176,7 @@ const Stablecoin = () => {
       }
 
       const calculateDime = async(value)=>{
-        const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+        const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
             const provider = new ethers.providers.JsonRpcProvider(url);
         setDaiAmount(value)
         // let calculatedValue = (((value * 1e18) * 20) / (80 * 9998930)) / 1000;
@@ -183,9 +188,10 @@ const Stablecoin = () => {
         // let creditTokenMint = ((reducedTotalDollarvalue * 50) / 100) * 999893 / 1e6; //24 - 6 = 18
         // let dimeTokenMint = (((reducedTotalDollarvalue * 50) / 100) * 999893) / 1e15; //24 - 15 = 9
         // setCreditToken(creditTokenMint);
-        const rolloverContract = new ethers.Contract(RolloverAddress, Rollover_ABI, provider);
-        let dimePrice = ethers.utils.formatUnits(await rolloverContract.PriceOfDime(),0);
-        let tauprice = ethers.utils.formatUnits(await rolloverContract.PriceOfTau(),0);
+        // const dimeOracle = new ethers.Contract(DIME_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
+        // const TauOracle = new ethers.Contract(TAU_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
+        let dimePrice = ethers.utils.formatUnits(await dimeOracle.getChainlinkDataFeedLatestAnswer(),0);
+        let tauprice = ethers.utils.formatUnits(await TauOracle.getChainlinkDataFeedLatestAnswer(),0);
         // let dimePrice = 1e8;
         // let tauprice = 10e8;
 
@@ -224,7 +230,7 @@ const rollover = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const rolloverContract = new ethers.Contract(RolloverAddress, Rollover_ABI, web31.getSigner(account));
+        const rolloverContract = new ethers.Contract(TAU_Bond_Address, TAU_Bond_ABI, web31.getSigner(account));
 
 
         console.log("jokerprice amount",JokerPrice,USDCPrice,daiAmount,JokerInput)
@@ -238,7 +244,7 @@ const rollover = async() =>{
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         await fraxCalculation();
         toast.success("Rollover is Done successfully");
@@ -263,7 +269,7 @@ const redeem = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const rolloverContract = new ethers.Contract(RolloverAddress, Rollover_ABI, web31.getSigner(account));
+        const rolloverContract = new ethers.Contract(TAU_Bond_Address, TAU_Bond_ABI, web31.getSigner(account));
 
 
         console.log("jokerprice amount",JokerPrice,USDCPrice,daiAmount,JokerInput)
@@ -277,7 +283,7 @@ const redeem = async() =>{
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         await fraxCalculation();
         toast.success("Rollover is Done successfully");
@@ -290,42 +296,7 @@ const redeem = async() =>{
 
 }
 
-const approveDai = async () => {
-    handleShowMint();
-    try {
-      const web31 = await connectToEthereum();
-      if (!web31) return;
-  
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const account = accounts[0]; // Use the first account
-  
-      console.log("Connected Successfully", account);
-  
-      // Create contract instance with the correct order of arguments
-      const daiContract = new ethers.Contract(daiTokenForDC, allTokenABI, web31.getSigner(account));
-  
-      // Convert daiAmount to BigNumber and multiply by 1e18
-      const daiAmountBN = ethers.utils.parseUnits(daiAmount.toString(), 18);
-  
-      const approveTx = await daiContract.approve(presaleDCMintProxy, daiAmountBN);
-      await approveTx.wait();
-  
-      console.log("approveTx", approveTx.hash);
-  
-      // Wait for a moment before fetching transaction details
-      await sleep(2000);
-      
-      const id = `https://goerli.etherscan.io/tx/${approveTx.hash}`;
-      toast.success(toastDiv(id));
-      toast.success("Approval successful");
-      await fraxCalculation();
-      handleHideMint();
-    } catch (error) {
-      toast.error("Approval failed", `${error}`);
-      console.error("Error:", error);
-      handleHideMint();
-    }
-  };
+
 
 const approveDIME = async() =>{
     handleShowMint();
@@ -339,14 +310,14 @@ const approveDIME = async() =>{
       console.log("Connected Successfully", account);
   
       // Create contract instance with the correct order of arguments
-      const dimeContract = new ethers.Contract(DIME_RO_Address, allTokenABI, web31.getSigner(account));
+      const dimeContract = new ethers.Contract(DIME_Token_Address, DIME_Token_ABI, web31.getSigner(account));
 
       let dimeValue = parseInt(daiAmount*1e9);
       console.log("jokerAmount", dimeValue);
       // Convert daiAmount to BigNumber and multiply by 1e9
       const dimeAmountBN = ethers.utils.parseUnits(dimeValue.toString(), 0);
       console.log("jokerAmountBN", dimeAmountBN);
-      const approveTx = await dimeContract.approve(RolloverAddress, dimeAmountBN);
+      const approveTx = await dimeContract.approve(TAU_Bond_Address, dimeAmountBN);
       await approveTx.wait();
   
       console.log("approveTx", approveTx.hash);
@@ -354,7 +325,7 @@ const approveDIME = async() =>{
       // Wait for a moment before fetching transaction details
       await sleep(2000);
       
-      const id = `https://goerli.etherscan.io/tx/${approveTx.hash}`;
+      const id = `https://sepolia.etherscan.io/tx/${approveTx.hash}`;
       toast.success(toastDiv(id));
       toast.success("Approval successful");
       await fraxCalculation();
@@ -378,14 +349,14 @@ const approveTAU = async() =>{
       console.log("Connected Successfully", account);
   
       // Create contract instance with the correct order of arguments
-      const dimeContract = new ethers.Contract(TAU_RO_Address, TAU_RO_ABI, web31.getSigner(account));
+      const dimeContract = new ethers.Contract(TAU_Token_Address, TAU_Token_ABI, web31.getSigner(account));
 
       let dimeValue = parseInt(daiAmount*1e9);
       console.log("jokerAmount", dimeValue);
       // Convert daiAmount to BigNumber and multiply by 1e9
       const dimeAmountBN = ethers.utils.parseUnits(dimeValue.toString(), 0);
       console.log("jokerAmountBN", dimeAmountBN);
-      const approveTx = await dimeContract.approve(RolloverAddress, dimeAmountBN);
+      const approveTx = await dimeContract.approve(TAU_Bond_Address, dimeAmountBN);
       await approveTx.wait();
   
       console.log("approveTx", approveTx.hash);
@@ -393,7 +364,7 @@ const approveTAU = async() =>{
       // Wait for a moment before fetching transaction details
       await sleep(2000);
       
-      const id = `https://goerli.etherscan.io/tx/${approveTx.hash}`;
+      const id = `https://sepolia.etherscan.io/tx/${approveTx.hash}`;
       toast.success(toastDiv(id));
       toast.success("Approval successful");
       await fraxCalculation();
