@@ -68,7 +68,7 @@ const Stablecoin = () => {
     const[allowan,setAllowance] = useState("")
     const[allowan2,setAllowance2] = useState("")
 
-    const [DimeToken, setDimeToken] = useState();
+    const [DimeToken, setDimeToken] = useState("");
     const [CreditToken, setCreditToken] = useState("");
 
     const[jokerPrice,setjokerPrice] = useState("")
@@ -474,7 +474,7 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>DAI</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(daiBalances) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(daiBalances)/1e18) * 100) / 100 : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(daiBalances) ? (parseFloat(daiBalances)/1e18).toLocaleString(undefined, { minimumFractionDigits: 9, useGrouping: false }) : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
@@ -504,13 +504,13 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>JOKER</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(JokerBalance) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(JokerBalance)/1e9) * 10000) / 10000 : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(JokerBalance) ? (parseFloat(JokerBalance)/1e9).toLocaleString(undefined, { minimumFractionDigits: 9, useGrouping: false }) : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
                                             <Col sm={7}>
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(JokerInput) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(JokerInput)/1e9) * 10000) / 10000 : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(JokerInput) ? (parseFloat(JokerInput)/1e9).toLocaleString(undefined, { minimumFractionDigits: 9, useGrouping: false }) : '0.00'}/>
                                                 </div>
                                             </Col>
                                          
@@ -528,13 +528,13 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>DIME</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(dimeBalance) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(dimeBalance)/1e9) * 10000) / 10000 : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(dimeBalance) ? (parseFloat(dimeBalance)/1e9).toLocaleString(undefined, { minimumFractionDigits: 9, useGrouping: false }) : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
                                             <Col sm={7}>
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(DimeToken) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(DimeToken)/1e9) * 10000) / 10000 : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(DimeToken) ? (parseFloat(DimeToken)/1e9).toLocaleString(undefined, { minimumFractionDigits: 9, useGrouping: false }) : '0.00'}/>
                                                 </div>
                                             </Col>
                                         </Row>
@@ -548,13 +548,13 @@ const approveJOKER = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>CREDITS</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(creditsBalance) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(creditsBalance)/1e18) * 10000) / 10000 : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(creditsBalance) ? (parseFloat(creditsBalance)/1e18).toLocaleString(undefined, { minimumFractionDigits: 9, useGrouping: false }) : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
                                             <Col sm={7}>
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(CreditToken) ? Math.floor(formatNumberWithDynamicDecimals(parseFloat(CreditToken)/1e18) * 10000) / 10000 : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(CreditToken) ? (parseFloat(CreditToken)/1e18).toLocaleString(undefined, { minimumFractionDigits: 9, useGrouping: false }) : '0.00'}/>
                                                 </div>
                                             </Col>
                                         </Row>
@@ -577,8 +577,8 @@ const approveJOKER = async() =>{
                                         </div>
                                         <div className="d-flex mb-1 align-items-center justify-content-between text-md">
                                             <span>You will receive</span>
-                                            <strong className='font-semibold'>{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : Math.floor(formatNumberWithDynamicDecimals(parseFloat(DimeToken/1e9)) * 100) / 100} DIME + 
-                                            &nbsp;{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : Math.floor(formatNumberWithDynamicDecimals(parseFloat(CreditToken/1e18)) * 100) / 100} CREDITS</strong>
+                                            <strong className='font-semibold'>{parseFloat(DimeToken) === 'NaN' ? '0.00' : parseFloat(DimeToken/1e9).toLocaleString(undefined, { minimumFractionDigits: 9, useGrouping: false })} DIME + 
+                                            &nbsp;{parseFloat(CreditToken) === 'NaN' ? '0.00' : parseFloat(CreditToken/1e18).toLocaleString(undefined, { minimumFractionDigits: 9, useGrouping: false })} CREDITS</strong>
                                         </div>
                                         
                                         {/* <div className="d-flex mb-1 align-items-center justify-content-between text-md">
