@@ -1,0 +1,80 @@
+{
+    "rewrites": [
+        {
+            "source": "/jokerapi/v1/visithistory",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/visithistory"
+        },
+        {
+            "source": "/jokerapi/v1/visithistory/address/{address}",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/visithistory/address/{address}"
+        },
+        {
+            "source": "/jokerapi/v1/visithistory/pagename/{pagename}",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/visithistory/pagename/{pagename}"
+        },
+        {
+            "source": "/jokerapi/v1/visithistory/region/{region}",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/visithistory/region/{region}"
+        },
+        {
+            "source": "/jokerapi/v1/transactions",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/transactions"
+        },
+        {
+            "source": "/jokerapi/v1/transactions/address/{address}",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/transactions/address/{address}"
+        },
+        {
+            "source": "/jokerapi/v1/transactions/contractaddress/{contractaddress}",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/transactions/contractaddress/{contractaddress}"
+        },
+        {
+            "source": "/jokerapi/v1/transactions/operation/{operation}",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/transactions/operation/{operation}"
+        },
+        {
+            "source": "/jokerapi/v1/treasury",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/treasury"
+        },
+        {
+            "source": "/jokerapi/v1/treasury/address/{address}",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/treasury/address/{address}"
+        },
+        {
+            "source": "/jokerapi/v1/treasury/tokenname/{tokenname}",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/treasury/tokenname/{tokenname}"
+        },
+        {
+            "source": "/jokerapi/v1/treasury/reservename/{reservename}",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/treasury/reservename/{reservename}"
+        },
+        {
+            "source": "/jokerapi/v1/treasury/tokenname/oneday",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/treasury/tokenname/oneday"
+        },
+        {
+            "source": "/jokerapi/v1/treasury/tokenname/oneweek",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/treasury/tokenname/oneweek"
+        },
+        {
+            "source": "/jokerapi/v1/treasury/tokenname/onemonth",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/treasury/tokenname/onemonth"
+        },
+        {
+            "source": "/jokerapi/v1/tokenprice",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/tokenprice"
+        },
+        {
+            "source": "/jokerapi/v1/tokenprice/oneday",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/tokenprice/oneday"
+        },
+        {
+            "source": "/jokerapi/v1/tokenprice/oneweek",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/tokenprice/oneweek"
+        },
+        {
+            "source": "/jokerapi/v1/tokenprice/onemonth",
+            "destination": "https://jokerprotocol.stasisonline.in/jokerapi/v1/tokenprice/onemonth"
+        }
+    ]
+}

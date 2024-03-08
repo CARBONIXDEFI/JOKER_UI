@@ -20,6 +20,8 @@ import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 import {ethers} from 'ethers';
 import { CREDITS_Chainlink_Oracle_Address, CREDITS_Token_ABI, CREDITS_Token_Address, Chainlink_Oracle_ABI, DAI_Chainlink_Oracle_Address, DAI_TOKEN_ABI, DAI_TOKEN_Address, DIME_Chainlink_Oracle_Address, DIME_Token_ABI, DIME_Token_Address, JOKER_Chainlink_Oracle_Address, JOKER_Token_ABI, JOKER_Token_Address, Presale_DIME_CREDITS_ABI, Presale_DIME_CREDITS_Address } from '../../abi/ABI&ContractAddress';
 
+import { TransactionPost } from '../../api/api'; 
+
 // import { allTokenABI, presaleDCABI, daiTokenForDC, jokerTokenForDC, dimeTokenForDC, creditsTokenForDC, 
 //          presaleDCMintProxy, ownerPresaleDC, treasuryPresaleDC } from '../../abi/abi';
 
@@ -218,6 +220,7 @@ const mintDimeCredit = async() =>{
         const mintTx = await MintContract.depositAndMint(daiAmountBN);
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
+        await TransactionPost(localStorage.getItem("walletAddress"), Presale_DIME_CREDITS_Address, "PresaleDime&Credit", mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
         let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));

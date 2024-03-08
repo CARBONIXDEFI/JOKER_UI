@@ -1,7 +1,8 @@
 {
-  "name": "elementdefi",
+  "name": "jokerprotocol",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://jokerprotocol.stasisonline.in/",
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.7.1",
     "@ethersproject/providers": "^5.7.2",
