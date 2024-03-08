@@ -13,10 +13,10 @@ import { ethers } from 'ethers';
 
 /* global BigInt */
 import stasiscoin  from '../../assets/images/stasiscoin.png';
-import { JOKERAddress,CREDITAddress,CreditcontractAbi,USDCAddress,USDCChainlinkAddress,USDCContractABI, JOKERABI2, JOKERCOntractABI,BlackAbi, BondAbi, BondAddress, CommunityWallet, DAIAddress, DIMEAddress, DaiAbi, DimeAbi, JUSDAbi, JUSDAddress, JUSDPoolAbi, JUSDPoolAddress, TreasuryAddress,DIMEChainlinkAddress,CREDITChainlinkAddress,JOKERChainlinkAddress,ChainLinkABi,CreditpolicyAbi,CreditPolicyContractAddress,DimeContractABI,ECOReserveAddress,ECOReserveABI,BurnVaultAddress,BurnVaultABI2 } from '../../abi/abi';
+// import { JOKERAddress,CREDITAddress,CreditcontractAbi,USDCAddress,USDCChainlinkAddress,USDCContractABI, JOKERABI2, JOKERCOntractABI,BlackAbi, BondAbi, BondAddress, CommunityWallet, DAIAddress, DIMEAddress, DaiAbi, DimeAbi, JUSDAbi, JUSDAddress, JUSDPoolAbi, JUSDPoolAddress, TreasuryAddress,DIMEChainlinkAddress,CREDITChainlinkAddress,JOKERChainlinkAddress,ChainLinkABi,CreditpolicyAbi,CreditPolicyContractAddress,DimeContractABI,ECOReserveAddress,ECOReserveABI,BurnVaultAddress,BurnVaultABI2 } from '../../abi/abi';
 import PieChart from './snippets/PieChartStable';
 import BarChartTreasuryvalue from './snippets/BarChartTreasuryvalue';
-import { Erc20TokenAddress, LaunchpadAddress, Erc20TokenAbi, LaunchpadAbi } from '../../abi/LaunchPadabi';
+// import { Erc20TokenAddress, LaunchpadAddress, Erc20TokenAbi, LaunchpadAbi } from '../../abi/LaunchPadabi';
 import jokercoin from '../../assets/images/Jokercoin.png';
 import stasisTetrahedron from '../../assets/images/Statis Tetrahedron.png';
 
@@ -24,6 +24,7 @@ import ReactDomServer from 'react-dom/server';
 import ButtonLoad from 'react-bootstrap-button-loader'
 
 import { ToastContainer, Toast, Zoom, Bounce, toast} from 'react-toastify';
+import { Burn_Vault_ABI, Burn_Vault_Address, JOKER_Token_ABI, JOKER_Token_Address } from '../../abi/ABI&ContractAddress';
 // const algosdk = require('algosdk');
 const Dashboard = () => {
 
@@ -149,15 +150,15 @@ const connectToEthereum = async () => {
       return null;
     }
   };
-  const url = "https://goerli.infura.io/v3/b1a500c779c94f89bc791ca58b3f1601";
+  const url = "https://sepolia.infura.io/v3/b1a500c779c94f89bc791ca58b3f1601";
   const provider = new ethers.providers.JsonRpcProvider(url);
 
-   const burnvaultContract =  new ethers.Contract(BurnVaultAddress,BurnVaultABI2,provider);
+   const burnvaultContract =  new ethers.Contract(Burn_Vault_Address,Burn_Vault_ABI,provider);
    // Create contract instance with the correct order of arguments
-   const JOKERContract = new ethers.Contract(JOKERAddress, JOKERABI2, provider);
-   const jokerpricedashboard = new ethers.Contract(JOKERChainlinkAddress,ChainLinkABi,provider);
-   const USDCPriceContract = new ethers.Contract(USDCChainlinkAddress, ChainLinkABi, provider);
-   const USDCContract = new ethers.Contract(USDCAddress, USDCContractABI, provider);
+   const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, provider);
+//    const jokerpricedashboard = new ethers.Contract(JOKERChainlinkAddress,ChainLinkABi,provider);
+//    const USDCPriceContract = new ethers.Contract(USDCChainlinkAddress, ChainLinkABi, provider);
+//    const USDCContract = new ethers.Contract(USDCAddress, USDCContractABI, provider);
 
    useEffect(() => {
     walletBalance();
@@ -172,18 +173,28 @@ const connectToEthereum = async () => {
             console.log("NotbalanceWei")
         }
         else{
-            let response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=balance&address=${localStorage.getItem("walletAddress")}&tag=latest`);
+            
+            let response = await fetch(`https://api-sepolia.etherscan.io/api?module=account&action=balance&address=${localStorage.getItem("walletAddress")}&tag=latest&apikey=YourApiKeyToken`);
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                // throw new Error('Network response was not ok');
               }
               let balanceWei;
               const data = await response.json();
+              console.log("balanceWeijok",data)
               if (data.status === '1') {
                 balanceWei = data.result;
               } else {
-                throw new Error('API response was not successful');
+                // throw new Error('API response was not successful');
               }
+              console.log("find",data)
+              const url = "https://sepolia.infura.io/v3/b1a500c779c94f89bc791ca58b3f1601";
+              const provider = new ethers.providers.JsonRpcProvider(url);
+            
+               const burnvaultContract =  new ethers.Contract(Burn_Vault_Address,Burn_Vault_ABI,provider);
+               // Create contract instance with the correct order of arguments
+               const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, provider);
               setEthBalance(parseFloat(balanceWei/1e18).toFixed(5))
+              console.log("balanceWeijok")
             let Jokerbalance = ethers.utils.formatUnits(await JOKERContract.balanceOf(localStorage.getItem("walletAddress")),0);
        
             setJokerbalance(Jokerbalance);
@@ -219,7 +230,7 @@ const connectToEthereum = async () => {
 
               console.log("loc1",loc);
             //   var allowan = await blackcontract.methods.allowance(account[0],contracts.burnvault.address).call();
-              let allowance =  ethers.utils.formatUnits(await JOKERContract.allowance(localStorage.getItem("walletAddress"),BurnVaultAddress),0);
+              let allowance =  ethers.utils.formatUnits(await JOKERContract.allowance(localStorage.getItem("walletAddress"),Burn_Vault_Address),0);
               console.log("allowance", allowance)
               setAllowance(allowance);
             
@@ -248,7 +259,7 @@ const connectToEthereum = async () => {
         </div>
     );
 
-useEffect(async() =>{await fetch()},[goal, startdt, enddt, total])
+// useEffect(async() =>{await fetch()},[goal, startdt, enddt, total])
 
 useEffect(async() => {
     await first()
@@ -347,20 +358,21 @@ const approveJOKER = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERABI2, web31.getSigner(account));
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, web31.getSigner(account));
         //const mintTx = await JOKERContract.methods.approve(BurnVaultAddress,BigInt(10000000000*1e9)).send({from:localStorage.getItem("walletAddress")});
-         const mintTx = await JOKERContract.approve(BurnVaultAddress,BigInt(10000000000*1e9));
+         const mintTx = await JOKERContract.approve(Burn_Vault_Address,BigInt(10000000000*1e9));
       
         // await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
-        await walletBalance();
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
+       
         await sleep(2000);
         toast.success(toastDiv(id));
        
         // await displayValueCalculation();
         toast.success("Approve is Done succeefully");
+        await walletBalance();
         handleHideLoadPurchase();
     }catch(error){
         toast.error("Approve is not succeed",`${error}`);
@@ -387,7 +399,7 @@ const purchaseBond = async() =>{
               console.log("Connected Successfully", account);
       
             //   // Create contract instance with the correct order of arguments
-            const burnvaultcontract = new ethers.Contract(BurnVaultAddress, BurnVaultABI2, web3.getSigner(localStorage.getItem("walletAddress")));
+            const burnvaultcontract = new ethers.Contract(Burn_Vault_Address, Burn_Vault_ABI, web3.getSigner(localStorage.getItem("walletAddress")));
       
          
             let maxtx = ethers.utils.formatUnits(await burnvaultContract.maxTxAmount(),0)
@@ -407,7 +419,7 @@ const purchaseBond = async() =>{
     if( val <= burnab1){
         let amount = val;
         console.log("amountcheck",amount);
-        const depositTx =await burnvaultcontract.swap(amount,{gasLimit:3000000});
+        const depositTx =await burnvaultcontract.swap(amount);
         
         await depositTx.wait();
        toast.success("Swapped successfully",{autoClose: 5000}); 
@@ -444,12 +456,12 @@ const changeInputValue = async(value) =>{
       console.log("valuej",swapamountjoker)
 
     let circulate = ethers.utils.formatUnits(await burnvaultContract.getCirculatingSupply(),9)
-    let usdcbalanceincontract = ethers.utils.formatUnits(await USDCContract.balanceOf(BurnVaultAddress),9);
+    let usdcbalanceincontract = ethers.utils.formatUnits(await burnvaultContract.getBurnVaultBNBBalance(),9);
    
-    let tokenPerUSDT = (circulate / usdcbalanceincontract);
+    let tokenPerUSDT = (circulate / usdcbalanceincontract)/1e9;
      
     //   uint256 totalUSDT = (_tokenAmount.div(tokenPerUSDT)).mul(1e9);
-       let calculatedValue = (swapAmount / tokenPerUSDT);
+       let calculatedValue = (swapAmount / tokenPerUSDT)*1e9;
        console.log("calculated value",calculatedValue);
     // let calculatedValue = ((1-0.9)*(value*1e9*USDCPrice))/(0.9*JokerPrice);
     // console.log("calculated",calculatedValue,Math.abs(calculatedValue)*JokerPrice,value*1e9*USDCPrice);
@@ -562,7 +574,7 @@ const changeInputValue = async(value) =>{
                         </Accordion.Header>
                         <Accordion.Body>
                             <div className="d-flex flex-wrap justify-content-end align-items-center float-sm-end mt-1 mb-sm-0 mb-2 acc-h-links">
-                                <a href={'https://sepolia.etherscan.io/address/' + BurnVaultAddress} rel="noopener noreferrer" target="_blank">
+                                <a href={'https://sepolia.etherscan.io/address/' + Burn_Vault_Address} rel="noopener noreferrer" target="_blank">
                                     <svg className="blue-dark-theme mb-1" width="16" height="16" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M15.8333 15.8333H4.16667V4.16667H10V2.5H4.16667C3.24167 2.5 2.5 3.25 2.5 4.16667V15.8333C2.5 16.75 3.24167 17.5 4.16667 17.5H15.8333C16.75 17.5 17.5 16.75 17.5 15.8333V10H15.8333V15.8333ZM11.6667 2.5V4.16667H14.6583L6.46667 12.3583L7.64167 13.5333L15.8333 5.34167V8.33333H17.5V2.5H11.6667Z" fill="#CCCCCC"></path></svg>
                                     {/* <span className='ms-1 text-white'>View Contract</span> */}
                                 </a>
@@ -634,7 +646,7 @@ const changeInputValue = async(value) =>{
                                                 
                                                 <Col >
                                                 <br/>
-                                                {allowan > swapamountjoker ? (
+                                                {parseInt(allowan) >= parseInt(swapamountjoker) ? (
   <Button loading={loaderPurchase} className='btn btn-blue' onClick={purchaseBond}>
     Swap Joker
   </Button>
