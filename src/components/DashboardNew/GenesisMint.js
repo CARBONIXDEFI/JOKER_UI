@@ -247,6 +247,7 @@ const dimeMint = async() =>{
         let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         setDaiAmount("");
+        setDimeToken("");
         await fraxCalculation();
         toast.success("Mint Done successfully");
         handleHideMint();
@@ -287,6 +288,7 @@ const creditMint = async() =>{
         let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         setDaiAmount("");
+        setCreditToken("");
         await fraxCalculation();
         toast.success("Mint Done successfully");
         handleHideMint();
@@ -544,7 +546,7 @@ const creditMint = async() =>{
                                                     <div className="ms-3 text-start">
                                                         
                                                         <h5 className='mb-0 font-semibold'>CREDIT</h5>
-                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(creditsBalance) ? (parseFloat(creditsBalance)/1e9).toFixed(2) : '0.00'}</h5>
+                                                        <h5 className='sub-heading text-xs mb-0'>Bal: {parseFloat(creditsBalance) ? (parseFloat(creditsBalance)/1e18).toFixed(2) : '0.00'}</h5>
                                                     </div>
                                                 </Button>
                                             </Col>
@@ -552,7 +554,7 @@ const creditMint = async() =>{
                                                 <div className="input-group-max px-3 input-group-max-lg w-100">
                                                     {/* <input type="number" placeholder='0.00' className='form-control' value={usdcAmount} onChange={(e) => amountSet(e.target.value)}/>  */}
                                                     {/* <div className="input-group-max px-3 input-group-max-lg w-100"> */}
-                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(CreditToken) ? (parseFloat(CreditToken)/1e9).toFixed(4) : '0.00'}/>
+                                                    <input readonly disabled type="number" placeholder='0.00' className='form-control' value={parseFloat(CreditToken) ? (parseFloat(CreditToken)/1e18).toFixed(4) : '0.00'}/>
                                                 {/* </div> */}
                                                 </div>
                                             </Col>
@@ -582,7 +584,7 @@ const creditMint = async() =>{
                                         </div> */}
                                         <div className="d-flex mb-1 align-items-center justify-content-between text-md">
                                             <span>You will receive</span>
-                                            <strong className='font-semibold'>{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : parseFloat(CreditToken/1e9).toFixed(2)}  
+                                            <strong className='font-semibold'>{parseFloat(CreditToken).toFixed(2) === 'NaN' ? '0.00' : parseFloat(CreditToken/1e18).toFixed(2)}  
                                             &nbsp; CREDIT</strong>
                                         </div>
                                         
