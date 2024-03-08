@@ -469,7 +469,7 @@ const purchaseBond = async() =>{
         // const val1 =  ethers.utils.parseUnits(val11, 18);;
         // Send the transaction and wait for it to be mined
       
-        const mintTx = await DimeBondContract.deposit(BigInt(parseInt(bondAmount)),BigInt(1000), localStorage.getItem("walletAddress"));
+        const mintTx = await DimeBondContract.deposit(BigInt(parseInt(bondAmount)),1000, localStorage.getItem("walletAddress"));
         await mintTx.wait();
       
         console.log("minttx",mintTx.hash);
@@ -716,13 +716,13 @@ const changeInputValue2 = async(value) => {
                                         Vesting Term
                                     </h6>
                                     <h5 className='mb-0 d-flex align-items-center'>
-                                        5 days
+                                        2 weeks
                                         <OverlayTrigger
                                             key="left"
                                             placement="left"
                                             overlay={
                                                 <Tooltip id={`tooltip-left`}>
-                                                    Total time required to claim all ELEM Assets
+                                                    Total time required to claim all STASIS Assets
                                                 </Tooltip>
                                             }
                                             >
@@ -794,7 +794,7 @@ const changeInputValue2 = async(value) => {
                                 <Tab eventKey="bond" title="Bond">
                                     <Row className='row-divider'>
                                         <Col md={4}>
-                                            <h6><span className='text-sm text-gray-d'>Your USDC Balance: </span>{daiBlance ? (parseFloat(daiBlance)/1e9).toFixed(4) : '0'} USDC</h6>
+                                            <h6><span className='text-sm text-gray-d'>Your USDC1 Balance: </span>{daiBlance ? (parseFloat(daiBlance)/1e18).toFixed(4) : '0'} USDC</h6>
                                             <Row className='flex-nowrap mb-2 gx-3'>
                                             <Col> <div className="acc-title me-2 d-flex ">
                                 <img src={USDC} alt="logo" />
