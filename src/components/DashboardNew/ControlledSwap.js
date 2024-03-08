@@ -31,11 +31,12 @@ import stasiscoin  from '../../assets/images/stasiscoin.png';
 import creditscoin from '../../assets/images/creditscoin.png';
 
 import {ethers} from 'ethers';
-import { BLACKAddress, BlackAbi, CREDITChainlinkAddress, ChainLinkABi, DAIAddress, DIMEAddress, DIMEChainlinkAddress, DaiAbi, DimeAbi, jokerAddressForMinting, JOKERAddress, JOKERABI2, JOKERCOntractABI, JOKERChainlinkAddress, JUSDAbi, JUSDAddress, JUSDPoolAbi, JUSDPoolAddress, USDCAddress, USDCChainlinkAddress, USDCContractABI } from '../../abi/abi';
-import { MintContractAddress } from '../../abi/abi';
-import { MintContractABI } from '../../abi/abi';
-import { ECOReserveAddress } from '../../abi/abi';
-import { ECOReserveABI } from '../../abi/abi';
+import { Chainlink_Oracle_ABI, JOKER_Chainlink_Oracle_Address, JOKER_Token_ABI, JOKER_Token_Address, WETH_TOKEN_Address } from '../../abi/ABI&ContractAddress';
+// import { BLACKAddress, BlackAbi, CREDITChainlinkAddress, ChainLinkABi, DAIAddress, DIMEAddress, DIMEChainlinkAddress, DaiAbi, DimeAbi, jokerAddressForMinting, JOKERAddress, JOKERABI2, JOKERCOntractABI, JOKERChainlinkAddress, JUSDAbi, JUSDAddress, JUSDPoolAbi, JUSDPoolAddress, USDCAddress, USDCChainlinkAddress, USDCContractABI } from '../../abi/abi';
+// import { MintContractAddress } from '../../abi/abi';
+// import { MintContractABI } from '../../abi/abi';
+// import { ECOReserveAddress } from '../../abi/abi';
+// import { ECOReserveABI } from '../../abi/abi';
 
 // const algosdk = require('algosdk');
 // const myAlgoWallet = new MyAlgoConnect();
@@ -202,17 +203,17 @@ const ControlledSwap = () => {
         else{
             console.log("useeffect")
             // const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const url = "https://goerli.infura.io/v3/b1a500c779c94f89bc791ca58b3f1601";
+            const url = "https://sepolia.infura.io/v3/b1a500c779c94f89bc791ca58b3f1601";
             const provider = new ethers.providers.JsonRpcProvider(url);
             // console.log("Connected Successfully", account);
 
             //new code
         // const DimePriceContract = new ethers.Contract(DIMEChainlinkAddress, ChainLinkABi, provider);
         // const USDCPriceContract = new ethers.Contract(USDCChainlinkAddress, ChainLinkABi, provider);
-        // const JokerPriceContract = new ethers.Contract(JOKERChainlinkAddress, ChainLinkABi, provider);
+        const JokerPriceContract = new ethers.Contract(JOKER_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
         // const CreditPriceContract = new ethers.Contract(CREDITChainlinkAddress, ChainLinkABi, provider);
         
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERABI2, provider);
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, provider);
         // const USDCContract = new ethers.Contract(USDCAddress, USDCContractABI, provider);
 
         // const MintContract = new ethers.Contract(MintContractAddress, MintContractABI, provider);
@@ -222,8 +223,8 @@ const ControlledSwap = () => {
         // let dimeprice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
         // let Creditprice = ethers.utils.formatUnits(await CreditPriceContract.getChainlinkDataFeedLatestAnswer(),0);
 
-        // let jokerPrice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
-        let jokerPrice = 10 * 10e8;//for now it is given as 10$
+        let jokerPrice = ethers.utils.formatUnits(await JokerPriceContract.getChainlinkDataFeedLatestAnswer(),0);
+        // let jokerPrice = 10 * 10e8;//for now it is given as 10$
 
         setJokerPrice(jokerPrice);
         // setUSDCPrice(usdcprice) 
@@ -288,22 +289,22 @@ const ControlledSwap = () => {
       }
 
       const changeinput = async(e) =>{
-        const url = "https://goerli.infura.io/v3/b1a500c779c94f89bc791ca58b3f1601";
+        const url = "https://sepolia.infura.io/v3/b1a500c779c94f89bc791ca58b3f1601";
             const provider = new ethers.providers.JsonRpcProvider(url);
         setjokerAmount(e);
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERABI2, provider);
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, provider);
         console.log("avaxSpent",e)
-        let avaxSpent = ethers.utils.formatUnits(await JOKERContract.checkSwapValue(e*1e9,[JOKERAddress,"0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6"]),0);
+        let avaxSpent = ethers.utils.formatUnits(await JOKERContract.checkSwapValue(e*1e9,[JOKER_Token_Address,WETH_TOKEN_Address]),0);
         console.log("avaxSpent",parseFloat(avaxSpent/1e18))
         let feesdeductedvalue = (parseFloat(avaxSpent)*50/100)/1e18;
         setethValue(feesdeductedvalue)     
       }
 
       const changeinput2 = async(e) =>{
-        const url = "https://goerli.infura.io/v3/b1a500c779c94f89bc791ca58b3f1601";
+        const url = "https://sepolia.infura.io/v3/b1a500c779c94f89bc791ca58b3f1601";
             const provider = new ethers.providers.JsonRpcProvider(url);
         setjokerAmount(e);
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERABI2, provider);
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, provider);
         console.log("avaxSpent",e)
         let avaxSpent = ethers.utils.formatUnits(await JOKERContract.checkLiquidityValue(e*1e9),0);
         console.log("avaxSpent2",parseFloat(avaxSpent/1e18))
@@ -317,195 +318,10 @@ const ControlledSwap = () => {
       }
 
 
-      const calculateJUSDmint = async(value)=>{
-        setJokerBlance(value)
-        //new code
-        //Jokervalue = ((1-cPercentage)*(daiAmount*daiPrice)) / (cPercentage*blackPrice)
-        let calculatedValue = ((1-0.5)*(value*1e9*USDCPrice))/(0.5*JokerPrice); 
-        console.log("calculated",calculatedValue,Math.abs(calculatedValue));
-        setJokerInput((Math.abs(calculatedValue)));
-
-        let Totaldollarvalue = (value*1e9*USDCPrice) + ((Math.abs(calculatedValue)) * JokerPrice);
-        let reducedTotalDollarvalue = Totaldollarvalue -(Totaldollarvalue * 10/100)
-        let creditTokenMint = reducedTotalDollarvalue/CreditPrice;
-        setCreditToken(creditTokenMint)
-        console.log("value",creditTokenMint,value)
-
-        console.log("creditToken",(value*1e9*USDCPrice) ,((Math.abs(calculatedValue)) * JokerPrice))
-       
-        //old code
-        
-
-        // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        // const account = accounts[0]; // Use the first account
-        // const provider = new ethers.providers.Web3Provider(window.ethereum)
-        // // console.log("Connected Successfully", account);
-
-        // // Create contract instance with the correct order of arguments
-        // const JusdPoolContract = new ethers.Contract(JUSDPoolAddress, JUSDPoolAbi, provider);
-        // const JUSDContract = new ethers.Contract(JUSDAddress, JUSDAbi, provider);
-        // let collateral_price = await JusdPoolContract.collateral_prices(0);
-        // let col_ratio = await JUSDContract.global_collateral_ratio();
-        // let fxs_price = await JusdPoolContract.getFXSPrice();
-        // let black_price = await JusdPoolContract.getBLACKPrice();
-        // console.log("collateral_price", await ethers.utils.formatUnits(collateral_price, 0))
-        // let collat_needed = e * 1e18;
-        // let PRICE_PRECISION = 1e6;
-
-        // // let  frax_amount = (collat_needed * (await ethers.utils.formatUnits(collateral_price, 0))) / ((await ethers.utils.formatUnits(col_ratio, 0)* PRICE_PRECISION) ); //amount need to pass
-        // // console.log("frax_amount",frax_amount)
-
-        // let  frax_amount = (((collat_needed * PRICE_PRECISION)/(await ethers.utils.formatUnits(collateral_price, 0))) * PRICE_PRECISION)/ (await ethers.utils.formatUnits(col_ratio, 0) ); //amount need to pass
-        // console.log("frax_amount",frax_amount)
-        // setdaiAmount(collat_needed);
-        // setfxsAmount(frax_amount)
-        // const frax_for_collat = (frax_amount * (await ethers.utils.formatUnits(col_ratio, 0))) / PRICE_PRECISION;
-        // console.log("frax_for_collat",frax_for_collat)
-        // const frax_for_fxs = frax_amount - frax_for_collat;
-        // //    const collat_needed = getFRAXInCollateral(col_idx, frax_for_collat);
-        // const splited_value = (frax_for_fxs * 50) / 100;
-
-        // const fxs_needed = (splited_value * PRICE_PRECISION) / (await ethers.utils.formatUnits(fxs_price, 0)); // Implement getFXSPrice function
-        // const black_needed = (frax_for_fxs - splited_value) * PRICE_PRECISION / ((await ethers.utils.formatUnits(black_price, 0)) ); // Implement getBLACKPrice function
-        // const total_frax_mint = (frax_amount *  (PRICE_PRECISION - 3000)) / PRICE_PRECISION; //minting_fee[col_idx] = 3000;
-        // console.log("fxs_needed",fxs_needed,black_needed,total_frax_mint)
-        // setfxsValue(fxs_needed);
-        // setblackValue(black_needed);
-        // setfraxValue(total_frax_mint)
-
-
-     
       
     
-      
 
-      }
-      const calculateDIMEmint = async(value)=>{
-          setUsdcAmount(value)
-        //new code
-        //Jokervalue = ((1-cPercentage)*(daiAmount*daiPrice)) / (cPercentage*blackPrice)
-        let calculatedValue = ((1-0.5)*(value*1e9*USDCPrice))/(0.5*JokerPrice);
-        console.log("calculated",calculatedValue,Math.abs(calculatedValue));
-        setJokerInput((Math.abs(calculatedValue)));
-
-        let Totaldollarvalue = (value*1e9*USDCPrice) + ((Math.abs(calculatedValue)) * JokerPrice);
-        let reducedTotalDollarvalue = Totaldollarvalue -(Totaldollarvalue * 10/100)
-        let DimeTokenMint = reducedTotalDollarvalue/dimePrice;
-        setDimeToken(DimeTokenMint)
-        console.log("CreditPrice",DimeTokenMint,dimePrice,CreditPrice)
-      
-
-        // console.log("creditToken",(value*1e9*USDCPrice) ,((Math.abs(calculatedValue)) * JokerPrice))
-
-        //old code
-        
-
-        // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        // const account = accounts[0]; // Use the first account
-        // const provider = new ethers.providers.Web3Provider(window.ethereum)
-        // // console.log("Connected Successfully", account);
-
-        // // Create contract instance with the correct order of arguments
-        // const JusdPoolContract = new ethers.Contract(JUSDPoolAddress, JUSDPoolAbi, provider);
-        // const JUSDContract = new ethers.Contract(JUSDAddress, JUSDAbi, provider);
-        // let collateral_price = await JusdPoolContract.collateral_prices(0);
-        // let col_ratio = await JUSDContract.global_collateral_ratio();
-        // let fxs_price = await JusdPoolContract.getFXSPrice();
-        // let black_price = await JusdPoolContract.getBLACKPrice();
-        // console.log("collateral_price", await ethers.utils.formatUnits(collateral_price, 0))
-        // let collat_needed = e * 1e18;
-        // let PRICE_PRECISION = 1e6;
-
-        // // let  frax_amount = (collat_needed * (await ethers.utils.formatUnits(collateral_price, 0))) / ((await ethers.utils.formatUnits(col_ratio, 0)* PRICE_PRECISION) ); //amount need to pass
-        // // console.log("frax_amount",frax_amount)
-
-        // let  frax_amount = (((collat_needed * PRICE_PRECISION)/(await ethers.utils.formatUnits(collateral_price, 0))) * PRICE_PRECISION)/ (await ethers.utils.formatUnits(col_ratio, 0) ); //amount need to pass
-        // console.log("frax_amount",frax_amount)
-        // setdaiAmount(collat_needed);
-        // setfxsAmount(frax_amount)
-        // const frax_for_collat = (frax_amount * (await ethers.utils.formatUnits(col_ratio, 0))) / PRICE_PRECISION;
-        // console.log("frax_for_collat",frax_for_collat)
-        // const frax_for_fxs = frax_amount - frax_for_collat;
-        // //    const collat_needed = getFRAXInCollateral(col_idx, frax_for_collat);
-        // const splited_value = (frax_for_fxs * 50) / 100;
-
-        // const fxs_needed = (splited_value * PRICE_PRECISION) / (await ethers.utils.formatUnits(fxs_price, 0)); // Implement getFXSPrice function
-        // const black_needed = (frax_for_fxs - splited_value) * PRICE_PRECISION / ((await ethers.utils.formatUnits(black_price, 0)) ); // Implement getBLACKPrice function
-        // const total_frax_mint = (frax_amount *  (PRICE_PRECISION - 3000)) / PRICE_PRECISION; //minting_fee[col_idx] = 3000;
-        // console.log("fxs_needed",fxs_needed,black_needed,total_frax_mint)
-        // setfxsValue(fxs_needed);
-        // setblackValue(black_needed);
-        // setfraxValue(total_frax_mint)
-
-
-     
-      
-    
-      
-
-      }
-      const  calculateRedeemValues = async(
-        col_idx,
-        frax_amount,
-        fxs_out_min,
-        col_out_min        
-      )  => {
-        // Constants
-        const PRICE_PRECISION = 1e6; // Adjust as needed, ensure it matches the Solidity contract's precision
-        let redemption_fee = 5500;
-        // Calculate frax_after_fee
-        const frax_after_fee = (frax_amount * (PRICE_PRECISION - redemption_fee)) / PRICE_PRECISION;
-        console.log("col_ratio",frax_after_fee, frax_amount)
-        // Initialize values
-        let collat_out = 0;
-        let fxs_out = 0;
-        let black_out = 0;
-     
-        
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const JusdPoolContract = new ethers.Contract(JUSDPoolAddress, JUSDPoolAbi, provider);
-        const JUSDContract = new ethers.Contract(JUSDAddress, JUSDAbi, provider);
-
-        let col_ratio =  await ethers.utils.formatUnits((await JUSDContract.global_collateral_ratio()),0);
-
-        // Assumes $1 FRAX in all cases
-        if (col_ratio >= PRICE_PRECISION) {
-          // 1-to-1 or overcollateralized
-          collat_out = await ethers.utils.formatUnits(await JusdPoolContract.getFRAXInCollateral(col_idx, BigInt(frax_after_fee)),0);
-        } else if (col_ratio == 0) {
-          // Algorithmic
-          const splited_value = (frax_after_fee * 50) / 100;
-          fxs_out = (splited_value * PRICE_PRECISION) /await ethers.utils.formatUnits(await JusdPoolContract.getFXSPrice(), 0);
-          black_out = (frax_after_fee - splited_value) * PRICE_PRECISION / ((await ethers.utils.formatUnits(await JusdPoolContract.getBLACKPrice(), 0)) );
-        } else {
-          // Fractional
-        
-          let fx_in = ( ethers.utils.formatUnits(await JusdPoolContract.getFRAXInCollateral(col_idx, BigInt(frax_after_fee)),0));
-          console.log("col_ratio",fx_in)
-          collat_out = ( fx_in * col_ratio) / PRICE_PRECISION;
-         
-          const splited_value = (frax_after_fee * 50) / 100;
-          fxs_out = (splited_value * (PRICE_PRECISION - col_ratio)) / await ethers.utils.formatUnits(await JusdPoolContract.getFXSPrice(), 0);;
-          black_out = (frax_after_fee - splited_value) * (PRICE_PRECISION - col_ratio) / ((await ethers.utils.formatUnits(await JusdPoolContract.getBLACKPrice(), 0)) );
-        }
-        setcollatout(collat_out);
-        setfxsOut(fxs_out)
-        setblackOut(black_out)
-        return {
-          collat_out,
-          fxs_out,
-          black_out,
-        };
-      }
-
-    const getReddemValue = async(val) =>{
-        setinputValue(val*1e18)
-        let col_idx = 0;
-        // let frax_amount = e *1e18;
-        const values = await calculateRedeemValues(col_idx,val*1e18,1,1);
-        console.log("values",values)
-    }
+ 
       
       
       
@@ -527,43 +343,7 @@ const ControlledSwap = () => {
 
   
 
-const mintCREDIT = async() =>{
-    handleShowMint();
-    try{
-        const web31 = await connectToEthereum();
-        if (!web31) return;
 
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const account = accounts[0]; // Use the first account
-
-        console.log("Connected Successfully", account);
-
-        // Create contract instance with the correct order of arguments
-        const MintContract = new ethers.Contract(MintContractAddress, MintContractABI, web31.getSigner(account));
-
-
-        console.log("jokerprice amount",JokerPrice,USDCPrice,usdcAmount*1e9,JokerInput)
-        // const val = ethers.utils.formatUnits(100000000000000, 0);
-        // let k = Web3.utils.toBN(1000000000000000000n);
-        // const val11 = ethers.utils.formatUnits(100000000000000, 18);
-        // const val1 =  ethers.utils.parseUnits(val11, 18);;
-        // Send the transaction and wait for it to be mined
-        const mintTx = await MintContract.mintCreditAndAddLiquidity(BigInt(parseInt(usdcAmount*1e9)),BigInt(parseInt(JokerInput-10)));
-        await mintTx.wait();
-        console.log("minttx",mintTx.hash);
-        // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
-        toast.success(toastDiv(id));
-        await fraxCalculation();
-        toast.success("Mint is Done successfully");
-        handleHideMint();
-    }catch(error){
-        toast.error("Mint is not succeed",`${error}`);
-        console.log("error",error)
-        handleHideMint();
-    }
-
-}
 const swapjoker = async() =>{
     handleShowMint();
     try{
@@ -576,7 +356,7 @@ const swapjoker = async() =>{
         console.log("Connected Successfully", account);
         console.log("Joker amount:", jokerAmount * 1e9);
         // Create contract instance with the correct order of arguments
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERABI2, web31.getSigner(account));
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, web31.getSigner(account));
         const mintTx = await JOKERContract.swapTokensForBNBUSer(BigInt(jokerAmount * 1e9),{gasLimit: 3000000});
                   
               
@@ -591,7 +371,7 @@ const swapjoker = async() =>{
         // await mintTx.wait();
         // console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         await fraxCalculation();
         toast.success("Mint is Done successfully");
@@ -604,38 +384,7 @@ const swapjoker = async() =>{
 
 }
 
-const approve = async() =>{
-    handleShowMint();
-    try{
-        const web31 = await connectToEthereum();
-        if (!web31) return;
 
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const account = accounts[0]; // Use the first account
-
-        console.log("Connected Successfully", account);
-
-        // Create contract instance with the correct order of arguments
-        // Create contract instance with the correct order of arguments
-        const USdcContract = new ethers.Contract(USDCAddress, USDCContractABI, web31.getSigner(account));
-
-        const mintTx = await USdcContract.approve(MintContractAddress,BigInt(10000000000*1e9));
-        await mintTx.wait();
-        console.log("minttx",mintTx.hash);
-        // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
-        await sleep(2000);
-        await fraxCalculation();
-        toast.success(toastDiv(id));
-        toast.success("Approve is Done successfully");
-        handleHideMint();
-    }catch(error){
-        toast.error("Approve is not succeed",`${error}`);
-        console.log("error",error)
-        handleHideMint();
-    }
-
-}
 const approveJOKER = async() =>{
     handleShowMint();
     try{
@@ -648,13 +397,13 @@ const approveJOKER = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERABI2, web31.getSigner(account));
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, web31.getSigner(account));
 
         const mintTx = await JOKERContract.approve(localStorage.getItem("walletAddress"),BigInt(jokerAmount*1e9));
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         await sleep(2000);
         await fraxCalculation();
         toast.success(toastDiv(id));
@@ -686,7 +435,7 @@ const addLiquidity2 = async() =>{
 
         // Create contract instance with the correct order of arguments
         //0xEfF92A263d31888d860bD50809A8D171709b7b1c
-        const JOKERContract = new ethers.Contract(JOKERAddress, JOKERABI2, web31.getSigner(account));
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, web31.getSigner(account));
          let avaxV = parseFloat(ethvalue*1e18).toFixed(0);
             // const JOKERContract = new ethers.Contract(jokerAddressForMinting, JOKERCOntractABI,  signer);
             const mintTx = await JOKERContract.addLiquidityUser(BigInt(jokerAmount * 1e9),{
@@ -697,7 +446,7 @@ const addLiquidity2 = async() =>{
             await mintTx.wait();
             console.log("minttx",mintTx.hash);
             // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-            let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+            let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
             await sleep(2000);
             await fraxCalculation();
             toast.success(toastDiv(id));
@@ -716,72 +465,7 @@ const addLiquidity2 = async() =>{
     }
   }
 
-const approvejusd = async() =>{
-    handleShowMint();
-    try{
-        const web31 = await connectToEthereum();
-        if (!web31) return;
 
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const account = accounts[0]; // Use the first account
-
-        console.log("Connected Successfully", account);
-
-        // Create contract instance with the correct order of arguments
-        const jusdContract = new ethers.Contract(JUSDAddress, JUSDAbi, web31.getSigner(account));
-
-        const mintTx = await jusdContract.approve(JUSDPoolAddress,BigInt(10000000000*1e18));
-       
-        await mintTx.wait();
-        console.log("minttx",mintTx.hash);
-        // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
-        toast.success(toastDiv(id));
-        toast.success("Approve JUSD is Done successfully");
-        handleHideMint();
-    }catch(error){
-        toast.error("Approve is not succeed",`${error}`);
-        console.log("error",error)
-        handleHideMint();
-    }
-
-}
-
-
-const redeemfxs = async() =>{
-    handleShowMint();
-    try{
-        const web31 = await connectToEthereum();
-        if (!web31) return;
-
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const account = accounts[0]; // Use the first account
-
-        console.log("Connected Successfully", account);
-
-        // Create contract instance with the correct order of arguments
-        const JusdPoolContract = new ethers.Contract(JUSDPoolAddress, JUSDPoolAbi, web31.getSigner(account));
-
-        // const val = ethers.utils.formatUnits(100000000000000, 0);
-        // let k = Web3.utils.toBN(1000000000000000000n);
-        // const val11 = ethers.utils.formatUnits(100000000000000, 18);
-        // const val1 =  ethers.utils.parseUnits(val11, 18);;
-        // Send the transaction and wait for it to be mined
-        const mintTx = await JusdPoolContract.redeemFrax(0,BigInt(inputValue),1,1);
-        await mintTx.wait();
-        console.log("minttx",mintTx.hash);
-        // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
-        toast.success(toastDiv(id));
-        toast.success("Redeem is Done successfully");
-        handleHideMint();
-    }catch(error){
-        toast.error("Redeem is not succeed");
-        console.log("error",error)
-        handleHideMint();
-    }
-
-}
 // const balCheckMintEinr = async () =>
 // {       handleShowMint();
 //         if((parseFloat(elemBalances/1000000)) < parseFloat(elemAmount))
@@ -803,12 +487,7 @@ const redeemfxs = async() =>{
 
 
 
-const usdcMaxTau = () =>
-{
-    setUsdcAmount(JokerBlance/1e9);
-    changeinput(JokerBlance/1e9)
-   
-    }
+
     const jokerMaxTau = () =>
 {
     setjokerAmount(JokerBlance);
@@ -821,12 +500,7 @@ const usdcMaxTau = () =>
     changeinput2(JokerBlance);
    
     }
-    const usdcMaxDime = () =>
-{
-    setUsdcAmount(usdcBalances/1e9);
-    calculateDIMEmint(usdcBalances/1e9)
-   
-    }
+    
 
     
     
@@ -869,8 +543,8 @@ const usdcMaxTau = () =>
                                             <Tooltip id={`tooltip-left`}>
                                                  {activeTab === 'mint' ? (
                                     <>
-                                        <strong className='text-purple'>1.</strong> Enter the Amount of JOKER you want to swap, equivalent Goerli ETH will be displayed automatically. <br /><br />
-                                        <strong className='text-purple'>2.</strong> Once you approve the desired amount of ETH to swap click on "Swap" button which will provide Goerli ETH for the given JOKER.
+                                        <strong className='text-purple'>1.</strong> Enter the Amount of JOKER you want to swap, equivalent sepolia ETH will be displayed automatically. <br /><br />
+                                        <strong className='text-purple'>2.</strong> Once you approve the desired amount of ETH to swap click on "Swap" button which will provide sepolia ETH for the given JOKER.
                                     </>
                                 ) : (
                                     // Tooltip content for the 'Mint DIME' tab

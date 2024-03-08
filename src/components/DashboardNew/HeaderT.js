@@ -380,17 +380,17 @@ const isMetaMaskInstalled = async () => {
 };
 async function ConnectWallet() {
     // const { activate, chainId } = useWeb3React();
-      const injectedConnector = new InjectedConnector({ supportedChainIds: [5] });
+      const injectedConnector = new InjectedConnector({ supportedChainIds: [11155111] });
       // activate(injectedConnector);
       // <><Header active = {active}/></>
       // <AvatarDropDown deactivate = {deactivate} />
       console.log("injectedConnector", injectedConnector);
       const chainId = await window.ethereum.request({ method: 'eth_requestAccounts' });
           console.log(chainId);
-          if(chainId!==0x5)
+          if(chainId!==0xaa36a7)
           {  await window.ethereum.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId:'0x5' }],
+              params: [{ chainId:'0xaa36a7' }],
             });
           }
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })

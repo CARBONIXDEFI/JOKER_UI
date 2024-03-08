@@ -23,10 +23,11 @@ import stasiscoin  from '../../assets/images/stasiscoin.png';
 import creditscoin from '../../assets/images/creditscoin.png';
 
 import { updatealgobalance } from "../formula";
-import { BondAbi, BondAddress, CREDITChainlinkAddress, ChainLinkABi, DAIAddress, DIMEAddress, DIMEChainlinkAddress, DaiAbi, DimeAbi, DimeContractABI, JOKERAddress, JOKERCOntractABI, JOKERChainlinkAddress, JUSDAbi, JUSDAddress, JUSDPoolAbi, JUSDPoolAddress, TreasuryAbi, TreasuryAddress, TreasuryContractABI, USDCAddress, USDCChainlinkAddress, USDCContractABI } from '../../abi/abi';
-import { bondContract, jokerTokenbond, dimeTokenbond, daiTokenbond, bondContractabi, jokerTokenbondabi, dimeTokenbondabi, daiTokenbondabi, treasurybondcontract, treasurybondabi} from '../../abi/abi';
+// import { BondAbi, BondAddress, CREDITChainlinkAddress, ChainLinkABi, DAIAddress, DIMEAddress, DIMEChainlinkAddress, DaiAbi, DimeAbi, DimeContractABI, JOKERAddress, JOKERCOntractABI, JOKERChainlinkAddress, JUSDAbi, JUSDAddress, JUSDPoolAbi, JUSDPoolAddress, TreasuryAbi, TreasuryAddress, TreasuryContractABI, USDCAddress, USDCChainlinkAddress, USDCContractABI } from '../../abi/abi';
+// import { bondContract, jokerTokenbond, dimeTokenbond, daiTokenbond, bondContractabi, jokerTokenbondabi, dimeTokenbondabi, daiTokenbondabi, treasurybondcontract, treasurybondabi} from '../../abi/abi';
 import { ethers } from 'ethers';
 import PurchaseBond from './PurchasedBonds';
+import { Chainlink_Oracle_ABI, DAI_TOKEN_ABI, DAI_TOKEN_Address, DIME_Bond_ABI, DIME_Bond_Address, DIME_Chainlink_Oracle_Address, DIME_TREASURY_ABI, DIME_TREASURY_Address, DIME_Token_ABI, DIME_Token_Address, JOKER_Token_ABI, JOKER_Token_Address } from '../../abi/ABI&ContractAddress';
 /* global BigInt */
 
 const algosdk = require('algosdk');
@@ -150,35 +151,35 @@ const Bond = () => {
       else{
           console.log("useeffect")
         //   const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+        const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
         const provider = new ethers.providers.JsonRpcProvider(url);
           // console.log("Connected Successfully", account);
         //new code
 
-        const DimePriceContract = new ethers.Contract(DIMEChainlinkAddress, ChainLinkABi, provider);
-        const USDCPriceContract = new ethers.Contract(USDCChainlinkAddress, ChainLinkABi, provider);
-        const JokerPriceContract = new ethers.Contract(JOKERChainlinkAddress, ChainLinkABi, provider);
-        const CreditPriceContract = new ethers.Contract(CREDITChainlinkAddress, ChainLinkABi, provider);
-        const DimeContract = new ethers.Contract(dimeTokenbond, dimeTokenbondabi, provider);
-        const daiContract = new ethers.Contract(daiTokenbond, daiTokenbondabi, provider);
-        const TreasuryContract = new ethers.Contract(treasurybondcontract, treasurybondabi, provider);
-        const JOKERContract = new ethers.Contract(jokerTokenbond, jokerTokenbondabi, provider);
-        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, provider);
-    //     let dimeprice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
+        const DimePriceContract = new ethers.Contract(DIME_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
+        // const USDCPriceContract = new ethers.Contract(USDCChainlinkAddress, ChainLinkABi, provider);
+        // const JokerPriceContract = new ethers.Contract(JOKERChainlinkAddress, ChainLinkABi, provider);
+        // const CreditPriceContract = new ethers.Contract(CREDITChainlinkAddress, ChainLinkABi, provider);
+        // const DimeContract = new ethers.Contract(dimeTokenbond, dimeTokenbondabi, provider);
+        const daiContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, provider);
+        const TreasuryContract = new ethers.Contract(DIME_TREASURY_Address, DIME_TREASURY_ABI, provider);
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, provider);
+        const DimeBondContract = new ethers.Contract(DIME_Bond_Address, DIME_Bond_ABI, provider);
+        let dimeprice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
     //    console.log("dimePrice",dimeprice)
     //     let usdcprice = ethers.utils.formatUnits(await USDCPriceContract.getChainlinkDataFeedLatestAnswer(),0);
 
     //     // let jokerPrice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
     //     let jokerPrice = 10 * 10e8;//for now it is given as 10$
     //     let Creditprice = ethers.utils.formatUnits(await CreditPriceContract.getChainlinkDataFeedLatestAnswer(),0);
-    //     setdimePrice(dimeprice);
+        setdimePrice(dimeprice);
     //     setJokerPrice(jokerPrice);
     //     setUSDCPrice(usdcprice) 
         
-        let allowance =  ethers.utils.formatUnits(await daiContract.allowance(localStorage.getItem("walletAddress"),bondContract),0);
+        let allowance =  ethers.utils.formatUnits(await daiContract.allowance(localStorage.getItem("walletAddress"),DIME_Bond_Address),0);
         console.log("allowance", allowance)
         setAllowance(allowance);
-        let allowance2 =  ethers.utils.formatUnits(await JOKERContract.allowance(localStorage.getItem("walletAddress"),bondContract),0);
+        let allowance2 =  ethers.utils.formatUnits(await JOKERContract.allowance(localStorage.getItem("walletAddress"),DIME_Bond_Address),0);
         console.log("allowance", allowance2)
         setAllowance2(allowance2);
 
@@ -272,9 +273,9 @@ const Bond = () => {
     }
 
     const getBondInfo = async() => {
-        const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+        const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
         const provider = new ethers.providers.JsonRpcProvider(url);
-        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, provider);
+        const DimeBondContract = new ethers.Contract(DIME_Bond_Address, DIME_Bond_ABI, provider);
         let userbonds = await DimeBondContract.getActiveBonds(localStorage.getItem('walletAddress'));
         setActiveBonds(userbonds);
         let bondInfo1 = [];
@@ -291,9 +292,9 @@ const Bond = () => {
             console.log("bonds:", bondInfo1);
     }
     const bonfInfo = async(bondNumber) => {
-        const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+        const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
         const provider = new ethers.providers.JsonRpcProvider(url);
-        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, provider);
+        const DimeBondContract = new ethers.Contract(DIME_Bond_Address, DIME_Bond_ABI, provider);
         const bigNumberObject = ethers.BigNumber.from(bondNumber);
         const result = await DimeBondContract.bondInfo(localStorage.getItem('walletAddress'), bigNumberObject.toNumber());
         console.log(" bondInfo:", result);
@@ -460,7 +461,7 @@ const purchaseBond = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, web31.getSigner(account));
+        const DimeBondContract = new ethers.Contract(DIME_Bond_Address, DIME_Bond_ABI, web31.getSigner(account));
 
         // const val = ethers.utils.formatUnits(100000000000000, 0);
         // let k = Web3.utils.toBN(1000000000000000000n);
@@ -473,7 +474,7 @@ const purchaseBond = async() =>{
       
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         await displayValueCalculation()
         toast.success("Bond purchased successfully");
@@ -499,14 +500,14 @@ const approve = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const daiContract = new ethers.Contract(daiTokenbond, daiTokenbondabi, web31.getSigner(account));
+        const daiContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, web31.getSigner(account));
 
-        const mintTx = await daiContract.approve(bondContract,BigInt(10000000000*1e9));
+        const mintTx = await daiContract.approve(DIME_Bond_Address,BigInt(10000000000*1e9));
       
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         await sleep(2000);
         toast.success(toastDiv(id));
        
@@ -533,14 +534,14 @@ const approveJOKER = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const JOKERContract = new ethers.Contract(jokerTokenbond, jokerTokenbondabi, web31.getSigner(account));
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, web31.getSigner(account));
 
-        const mintTx = await JOKERContract.approve(bondContract,BigInt(10000000000*1e9));
+        const mintTx = await JOKERContract.approve(DIME_Bond_Address,BigInt(10000000000*1e9));
       
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         await sleep(2000);
         toast.success(toastDiv(id));
         
@@ -568,7 +569,7 @@ const claimWalletCheck = async () =>
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const DimeContract = new ethers.Contract(DIMEAddress, DimeContractABI, web31.getSigner(account));
+        const DimeContract = new ethers.Contract(DIME_Token_Address, DIME_Token_ABI, web31.getSigner(account));
 
         // const val = ethers.utils.formatUnits(100000000000000, 0);
         // let k = Web3.utils.toBN(1000000000000000000n);
@@ -612,7 +613,7 @@ const changeInputValue2 = async(value) => {
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, web31.getSigner(account));
+        const DimeBondContract = new ethers.Contract(DIME_Bond_Address, DIME_Bond_ABI, web31.getSigner(account));
         let result = await DimeBondContract.depositchecker(BigInt(value*1e18));
         const bigNumberObject = ethers.BigNumber.from((result[3])._hex);
         console.log(result);

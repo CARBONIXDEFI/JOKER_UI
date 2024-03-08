@@ -8,7 +8,8 @@ import USDC from '../../assets/images/usdc.jpg';
 import MyAlgoConnect from '@randlabs/myalgo-connect';
 import { ToastContainer, Toast, Zoom, Bounce, toast} from 'react-toastify';
 import { ethers } from 'ethers';
-import { bondContract, jokerTokenbond, dimeTokenbond, daiTokenbond, bondContractabi, jokerTokenbondabi, dimeTokenbondabi, daiTokenbondabi} from '../../abi/abi';
+import { DIME_Bond_ABI, DIME_Bond_Address } from '../../abi/ABI&ContractAddress';
+// import { bondContract, jokerTokenbond, dimeTokenbond, daiTokenbond, bondContractabi, jokerTokenbondabi, dimeTokenbondabi, daiTokenbondabi} from '../../abi/abi';
 
 
 const PurchaseBond = (prop) => {
@@ -69,7 +70,7 @@ const PurchaseBond = (prop) => {
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, web31.getSigner(account));
+        const DimeBondContract = new ethers.Contract(DIME_Bond_Address, DIME_Bond_ABI, web31.getSigner(account));
 
         // const val = ethers.utils.formatUnits(100000000000000, 0);
         // let k = Web3.utils.toBN(1000000000000000000n);
@@ -80,7 +81,7 @@ const PurchaseBond = (prop) => {
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         await sleep(2000);
         toast.success(toastDiv(id));
         await displayValueCalculation2();
@@ -129,7 +130,7 @@ const connectToEthereum = async () => {
     else{
         console.log("useeffect")
       //   const provider = new ethers.providers.Web3Provider(window.ethereum)
-      const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+      const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
       const provider = new ethers.providers.JsonRpcProvider(url);
         // console.log("Connected Successfully", account);
       //new code
@@ -138,11 +139,11 @@ const connectToEthereum = async () => {
     //   const USDCPriceContract = new ethers.Contract(USDCChainlinkAddress, ChainLinkABi, provider);
     //   const JokerPriceContract = new ethers.Contract(JOKERChainlinkAddress, ChainLinkABi, provider);
     //   const CreditPriceContract = new ethers.Contract(CREDITChainlinkAddress, ChainLinkABi, provider);
-      const DimeContract = new ethers.Contract(dimeTokenbond, dimeTokenbondabi, provider);
-      const daiContract = new ethers.Contract(daiTokenbond, daiTokenbondabi, provider);
-    //   const TreasuryContract = new ethers.Contract(TreasuryAddress, TreasuryContractABI, provider);
-      const JOKERContract = new ethers.Contract(jokerTokenbond, jokerTokenbondabi, provider);
-      const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, provider);
+    //   const DimeContract = new ethers.Contract(dimeTokenbond, dimeTokenbondabi, provider);
+    //   const daiContract = new ethers.Contract(daiTokenbond, daiTokenbondabi, provider);
+    // //   const TreasuryContract = new ethers.Contract(TreasuryAddress, TreasuryContractABI, provider);
+    //   const JOKERContract = new ethers.Contract(jokerTokenbond, jokerTokenbondabi, provider);
+      const DimeBondContract = new ethers.Contract(DIME_Bond_Address, DIME_Bond_ABI, provider);
       let bondInfo1 = await bonfInfo((ethers.BigNumber.from(prop.bondcount)).toNumber());
       setBondInfo(bondInfo1);
       fixdimeoutput();
@@ -162,9 +163,9 @@ const connectToEthereum = async () => {
     }
   }
   const bonfInfo = async(bondNumber) => {
-    const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+    const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
     const provider = new ethers.providers.JsonRpcProvider(url);
-    const DimeBondContract = new ethers.Contract(bondContract, bondContractabi, provider);
+    const DimeBondContract = new ethers.Contract(DIME_Bond_Address, DIME_Bond_ABI, provider);
     const bigNumberObject = ethers.BigNumber.from(bondNumber);
     const result = await DimeBondContract.bondInfo(localStorage.getItem('walletAddress'), bigNumberObject.toNumber());
     console.log(" bondInfo:", result);

@@ -18,9 +18,10 @@ import Web3 from 'web3';
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 import {ethers} from 'ethers';
+import { CREDITS_Chainlink_Oracle_Address, CREDITS_Token_ABI, CREDITS_Token_Address, Chainlink_Oracle_ABI, DAI_Chainlink_Oracle_Address, DAI_TOKEN_ABI, DAI_TOKEN_Address, DIME_Chainlink_Oracle_Address, DIME_Token_ABI, DIME_Token_Address, JOKER_Chainlink_Oracle_Address, JOKER_Token_ABI, JOKER_Token_Address, Presale_DIME_CREDITS_ABI, Presale_DIME_CREDITS_Address } from '../../abi/ABI&ContractAddress';
 
-import { allTokenABI, presaleDCABI, daiTokenForDC, jokerTokenForDC, dimeTokenForDC, creditsTokenForDC, 
-         presaleDCMintProxy, ownerPresaleDC, treasuryPresaleDC } from '../../abi/abi';
+// import { allTokenABI, presaleDCABI, daiTokenForDC, jokerTokenForDC, dimeTokenForDC, creditsTokenForDC, 
+//          presaleDCMintProxy, ownerPresaleDC, treasuryPresaleDC } from '../../abi/abi';
 
 const Stablecoin = () => {
 
@@ -68,6 +69,11 @@ const Stablecoin = () => {
     const [DimeToken, setDimeToken] = useState();
     const [CreditToken, setCreditToken] = useState("");
 
+    const[jokerPrice,setjokerPrice] = useState("")
+    const[daiPrice,setdaiPrice] = useState("")
+    const[creditsPrice,setcreditsPrice] = useState("")
+    // const[dimePrice,setdimePrice] = useState("")
+
     const[JokerPrice,setJokerPrice] = useState("")
     const[USDCPrice,setUSDCPrice] = useState("")
     const[CreditPrice,setCreditPrice] = useState("")
@@ -104,36 +110,41 @@ const Stablecoin = () => {
         else{
             console.log("useeffect")
             // const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+            const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
             const provider = new ethers.providers.JsonRpcProvider(url);
             // console.log("Connected Successfully", account);
 
             //new code
-        // const DimePriceContract = new ethers.Contract(DIMEChainlinkAddress, ChainLinkABi, provider);
-        // const USDCPriceContract = new ethers.Contract(USDCChainlinkAddress, ChainLinkABi, provider);
-        // const JokerPriceContract = new ethers.Contract(JOKERChainlinkAddress, ChainLinkABi, provider);
-        // const CreditPriceContract = new ethers.Contract(CREDITChainlinkAddress, ChainLinkABi, provider);
+        const DimePriceContract = new ethers.Contract(DIME_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
+        const USDCPriceContract = new ethers.Contract(DAI_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
+        const JokerPriceContract = new ethers.Contract(JOKER_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
+        const CreditPriceContract = new ethers.Contract(CREDITS_Chainlink_Oracle_Address, Chainlink_Oracle_ABI, provider);
         
-        const JOKERContract = new ethers.Contract(jokerTokenForDC, allTokenABI, provider);
-        const daiContract = new ethers.Contract(daiTokenForDC, allTokenABI, provider);
-        const dimeContract = new ethers.Contract(dimeTokenForDC, allTokenABI, provider);
-        const creditsContract = new ethers.Contract(creditsTokenForDC, allTokenABI, provider);
+        const JOKERContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, provider);
+        const daiContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, provider);
+        const dimeContract = new ethers.Contract(DIME_Token_Address, DIME_Token_ABI, provider);
+        const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, provider);
 
-        const MintContractDC = new ethers.Contract(presaleDCMintProxy, presaleDCABI, provider);
+        // const MintContractDC = new ethers.Contract(presaleDCMintProxy, presaleDCABI, provider);
         // const ECOReserveContract = new ethers.Contract(ECOReserveAddress, ECOReserveABI, provider);
 
-        // let usdcprice = ethers.utils.formatUnits(await USDCPriceContract.getChainlinkDataFeedLatestAnswer(),0);
-        // let dimeprice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
-        // let Creditprice = ethers.utils.formatUnits(await CreditPriceContract.getChainlinkDataFeedLatestAnswer(),0);
-        // let Jokerprice = ethers.utils.formatUnits(await JokerPriceContract.getChainlinkDataFeedLatestAnswer(),0);
+        let usdcprice = ethers.utils.formatUnits(await USDCPriceContract.getChainlinkDataFeedLatestAnswer(),0);
+        let dimeprice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
+        let Creditprice = ethers.utils.formatUnits(await CreditPriceContract.getChainlinkDataFeedLatestAnswer(),0);
+        let Jokerprice = ethers.utils.formatUnits(await JokerPriceContract.getChainlinkDataFeedLatestAnswer(),0);
 
         // let jokerPrice = ethers.utils.formatUnits(await DimePriceContract.getChainlinkDataFeedLatestAnswer(),0);
         // let jokerPrice = 10 * 10e8;//for now it is given as 10$
 
-        setJokerPrice(9998930);
-        setUSDCPrice(999893) 
-        setdimePrice(999893);
-        setCreditPrice(999893);
+        // setJokerPrice(Jokerprice);
+        // setUSDCPrice(usdcprice) 
+        // setdimePrice(dimeprice);
+        // setCreditPrice(Creditprice);
+
+        setjokerPrice(Jokerprice);
+        setdaiPrice(usdcprice) 
+        setdimePrice(dimeprice);
+        setcreditsPrice(Creditprice);
 
         let daibalance = ethers.utils.formatUnits(await daiContract.balanceOf(localStorage.getItem("walletAddress")),0);
         setDaiBalances(daibalance)  
@@ -144,10 +155,10 @@ const Stablecoin = () => {
         let creditsbalance = ethers.utils.formatUnits(await creditsContract.balanceOf(localStorage.getItem("walletAddress")),0);
         setCreditsBalance(creditsbalance)  
 
-        let allowance =  ethers.utils.formatUnits(await daiContract.allowance(localStorage.getItem("walletAddress"),presaleDCMintProxy),0);
+        let allowance =  ethers.utils.formatUnits(await daiContract.allowance(localStorage.getItem("walletAddress"),Presale_DIME_CREDITS_Address),0);
         console.log("allowance1", allowance)
         setAllowance(allowance);
-        let allowance2 =  ethers.utils.formatUnits(await JOKERContract.allowance(localStorage.getItem("walletAddress"),presaleDCMintProxy),0);
+        let allowance2 =  ethers.utils.formatUnits(await JOKERContract.allowance(localStorage.getItem("walletAddress"),Presale_DIME_CREDITS_Address),0);
         console.log("allowance2", allowance2)
         setAllowance2(allowance2);
         }
@@ -155,17 +166,16 @@ const Stablecoin = () => {
 
       const calculateDimeCreditmint = async(value)=>{
         setDaiAmount(value)
-        let calculatedValue = (((value * 1e18) * 20) / (80 * 9998930)) / 1000;
+        let dai25 = (value * 1e18) * 25 / 100;
+        let calculatedValue = (dai25 * (daiPrice) * (10 ** 9)) / (jokerPrice * (10 ** 18));
         console.log("calculated",calculatedValue,Math.abs(calculatedValue));
         setJokerInput((Math.abs(calculatedValue)));
 
-        let Totaldollarvalue = (((value * 1e18) * 999893) + ((Math.abs(calculatedValue) * 1e9) * 9998930)) / 1e6;
-        let reducedTotalDollarvalue = (Totaldollarvalue * 80) / 100;
-        let creditTokenMint = ((reducedTotalDollarvalue * 50) / 100) * 999893 / 1e6; //24 - 6 = 18
-        let dimeTokenMint = (((reducedTotalDollarvalue * 50) / 100) * 999893) / 1e15; //24 - 15 = 9
+        let Totaldollarvalue = ((value * 1e18) * daiPrice)  / 1e18;
+        let creditTokenMint = ((Totaldollarvalue * 1e18 * 50) / (100 * creditsPrice)); //24 - 6 = 18
+        let dimeTokenMint = ((Totaldollarvalue * 1e9 * 50) / (100 * dimePrice)); //24 - 15 = 9
         setCreditToken(creditTokenMint);
         setDimeToken(dimeTokenMint);
-
         await fraxCalculation();
 
         console.log("Tokens", calculatedValue, Totaldollarvalue, creditTokenMint, dimeTokenMint);
@@ -196,7 +206,7 @@ const mintDimeCredit = async() =>{
         console.log("Connected Successfully", account);
 
         // Create contract instance with the correct order of arguments
-        const MintContract = new ethers.Contract(presaleDCMintProxy, presaleDCABI, web31.getSigner(account));
+        const MintContract = new ethers.Contract(Presale_DIME_CREDITS_Address, Presale_DIME_CREDITS_ABI, web31.getSigner(account));
 
 
         console.log("jokerprice amount",JokerPrice,USDCPrice,daiAmount,JokerInput)
@@ -209,7 +219,7 @@ const mintDimeCredit = async() =>{
         await mintTx.wait();
         console.log("minttx",mintTx.hash);
         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-        let id = "https://goerli.etherscan.io/tx/" + mintTx.hash;
+        let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
         toast.success(toastDiv(id));
         await fraxCalculation();
         toast.success("Mint is Done successfully");
@@ -234,12 +244,12 @@ const approveDai = async () => {
       console.log("Connected Successfully", account);
   
       // Create contract instance with the correct order of arguments
-      const daiContract = new ethers.Contract(daiTokenForDC, allTokenABI, web31.getSigner(account));
+      const daiContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, web31.getSigner(account));
   
       // Convert daiAmount to BigNumber and multiply by 1e18
       const daiAmountBN = ethers.utils.parseUnits(daiAmount.toString(), 18);
   
-      const approveTx = await daiContract.approve(presaleDCMintProxy, daiAmountBN);
+      const approveTx = await daiContract.approve(Presale_DIME_CREDITS_Address, daiAmountBN);
       await approveTx.wait();
   
       console.log("approveTx", approveTx.hash);
@@ -247,7 +257,7 @@ const approveDai = async () => {
       // Wait for a moment before fetching transaction details
       await sleep(2000);
       
-      const id = `https://goerli.etherscan.io/tx/${approveTx.hash}`;
+      const id = `https://sepolia.etherscan.io/tx/${approveTx.hash}`;
       toast.success(toastDiv(id));
       toast.success("Approval successful");
       await fraxCalculation();
@@ -271,14 +281,14 @@ const approveJOKER = async() =>{
       console.log("Connected Successfully", account);
   
       // Create contract instance with the correct order of arguments
-      const jokerContract = new ethers.Contract(jokerTokenForDC, allTokenABI, web31.getSigner(account));
+      const jokerContract = new ethers.Contract(JOKER_Token_Address, JOKER_Token_ABI, web31.getSigner(account));
 
       let jokerAmount = parseInt(JokerInput);
       console.log("jokerAmount", jokerAmount);
       // Convert daiAmount to BigNumber and multiply by 1e9
       const jokerAmountBN = ethers.utils.parseUnits(jokerAmount.toString(), 0);
       console.log("jokerAmountBN", jokerAmountBN);
-      const approveTx = await jokerContract.approve(presaleDCMintProxy, jokerAmountBN);
+      const approveTx = await jokerContract.approve(Presale_DIME_CREDITS_Address, jokerAmountBN);
       await approveTx.wait();
   
       console.log("approveTx", approveTx.hash);
@@ -286,7 +296,7 @@ const approveJOKER = async() =>{
       // Wait for a moment before fetching transaction details
       await sleep(2000);
       
-      const id = `https://goerli.etherscan.io/tx/${approveTx.hash}`;
+      const id = `https://sepolia.etherscan.io/tx/${approveTx.hash}`;
       toast.success(toastDiv(id));
       toast.success("Approval successful");
       await fraxCalculation();
@@ -365,7 +375,7 @@ const approveJOKER = async() =>{
           
                 const APP_NAME = 'Coinbase';
                 const APP_LOGO_URL = 'https://example.com/logo.png';
-                const DEFAULT_ETH_JSONRPC_URL =  'https://eth-goerli.public.blastapi.io';
+                const DEFAULT_ETH_JSONRPC_URL =  'https://eth-sepolia.public.blastapi.io';
                 const DEFAULT_CHAIN_ID = 5;
           
                 const coinbaseWallet = new CoinbaseWalletSDK({
