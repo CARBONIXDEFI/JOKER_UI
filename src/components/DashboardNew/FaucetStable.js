@@ -459,7 +459,7 @@ try {
     // Create contract instance with the correct order of arguments
     const FaucetContract = new ethers.Contract(Faucet_Address, Faucet_ABI, web31.getSigner(account));
 
-    const mintTx = await FaucetContract.dispense("USDC");
+    const mintTx = await FaucetContract.dispense("DAI");
   
     await mintTx.wait();
     console.log("minttx",mintTx.hash);
