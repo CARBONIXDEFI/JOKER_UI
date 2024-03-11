@@ -272,7 +272,7 @@ console.log("depositedcbusd",depositedcbusd);
                 await mintTx.wait();
                 console.log("minttx",mintTx.hash);
                 // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-                let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+                let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
                 toast.success(toastDiv(id));
                 // await fraxCalculation();
                 await resetValues();
@@ -342,7 +342,7 @@ else{
                 await mintTx.wait();
                 console.log("minttx",mintTx.hash);
                 // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-                let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+                let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
                 toast.success(toastDiv(id));
                 // await fraxCalculation();
                 await resetValues();
@@ -412,7 +412,7 @@ else{
                 await mintTx.wait();
                 console.log("minttx",mintTx.hash);
                 // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-                let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+                let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
                 toast.success(toastDiv(id));
                 // await fraxCalculation();
                 await resetValues();
@@ -508,7 +508,7 @@ console.log("depositedcbusd",depositedcbusd);
                 await mintTx.wait();
                 console.log("minttx",mintTx.hash);
                 // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-                let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+                let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
                 toast.success(toastDiv(id));
                 // await fraxCalculation();
                 await resetValues();
@@ -576,7 +576,7 @@ console.log("depositedcbusd",depositedcbusd);
     //         await mintTx.wait();
     //         console.log("minttx",mintTx.hash);
     //         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-    //         let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+    //         let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
     //         toast.success(toastDiv(id));
     //         await fraxCalculation();
     //         await resetValues();
@@ -637,7 +637,7 @@ console.log("depositedcbusd",depositedcbusd);
     //         await mintTx.wait();
     //         console.log("minttx",mintTx.hash);
     //         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-    //         let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+    //         let id = "https://sepolia.etherscan.io/tx/" + mintTx.hash;
     //         toast.success(toastDiv(id));
     //         await fraxCalculation();
     //         await resetValues();
@@ -675,7 +675,7 @@ console.log("depositedcbusd",depositedcbusd);
             await approveTxCREDIT.wait();
             console.log("minttx",approveTxCREDIT.hash);
             // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-            let id = "https://goerli.basescan.org/tx/" + approveTxCREDIT.hash;
+            let id = "https://sepolia.etherscan.io/tx/" + approveTxCREDIT.hash;
             toast.success(toastDiv(id));
             toast.success("Approve JUSD is Done succeefully");
             // await fraxCalculation();
