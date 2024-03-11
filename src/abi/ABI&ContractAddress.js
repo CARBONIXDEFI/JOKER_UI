@@ -9675,4 +9675,4 @@ export const Presale_DIME_CREDITS_Address ="0x8f10863065Cc2ac51d2d73Cc72eE3cf35f
 export const Genesis_Mint_Address ="0xAEA1072920877353270cf171622b3591224eDBb4"
 export const Faucet_Address ="0x4fEF75b1c432Ed43D4F5ADd3E8532661A6757519"
 export const ECO_Reserve_Treasury_Address ="0x7511513B12F1Fc5B27a4Dc2d7D5D97325a08be62"
-export const Burn_Vault_Address ="0xfDaD2501eA07bA121174A1E760Df60Eb14bB6167"
+export const Burn_Vault_Address ="0x7bfD87C15B3D208B2199802B8efc2B538d58278c"
