@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Form } from 'react-bootstrap';
 import { Alert, Button, Card, Col, Container, OverlayTrigger, Row, Tab, Tabs, Tooltip, InputGroup, FormControl, Modal } from 'react-bootstrap';
 import Layout from './LayoutT';
 import { Link } from 'react-router-dom';
 import ethlogo from '../../assets/images/ethLogo.png';
 import ButtonLoad from 'react-bootstrap-button-loader';
-import { updatealgobalance } from "../formula";
+import { updatealgobalance, usdcbalance } from "../formula";
 import BigNumber from "bignumber.js";
 import Web3 from 'web3';
 /* global BigInt */
@@ -27,7 +28,7 @@ import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
 
 import {ethers} from 'ethers';
-import { BLACKAddress, BlackAbi, DAIAddress, DIMEAddress, DaiAbi, DimeAbi, HayTokenAbi, HayTokenAddress, HelioProviderAbi, HelioProviderAddress, InteractionAbi, InteractionAddress, JUSDAbi, JUSDAddress, JUSDPoolAbi, JUSDPoolAddress, ceTokenAddress } from '../../abi/abi';
+import {carbonfinance,CREDITS_Token_Address,sentinel,vaultadapterabi,carbonfinanceabi,CREDITS_Token_ABI,DAI_TOKEN_ABI, DAI_TOKEN_Address } from '../../abi/ABI&ContractAddress';
 
 const algosdk = require('algosdk');
 const myAlgoWallet = new MyAlgoConnect();
@@ -110,26 +111,22 @@ const Stablecoin = () => {
     const[walletsBalance,setwalletBalance] = useState("")
     const[collateralTowithdraw,setcollateralTowithdraw] = useState("")
     const[CollateralBalance,setCollateralBalance] = useState("")
+    const[Collaterallimt,setCollaterallimt] = useState("")
     const[BorrowedAmount,setBorrowedAmount] = useState("")
     const[AvailabletoBorrow,setAvailabletoBorrow] = useState("") 
-    const[HayBalance,setHayBalance] = useState("")
-    const[allowan,setAllowance] = useState("")
-   
+    const[USDCBalance,setUSDCBalance] = useState("")
+    const[CreditsBalance,setCreditsBalance] = useState("")
+    const[allowan1,setAllowance] = useState("")
+    const[allowan2,setAllowance2] = useState("")
 
+    // Inside your component function
+// const [allowance, setAllowance] = useState(0);
+// const [allowance2, setAllowance2] = useState(0);
+const [usdcInput, setUsdcInput] = useState(0);
+const [creditInput, setCreditInput] = useState(0);
 
-
-    
-
-
-
-    // const algosdk = require('algosdk');
-    // const baseServer = 'https://testnet-algorand.api.purestake.io/ps2';
-    // const port = '';
-    
-    // const token = {
-    //    'X-API-Key': 'pOD5BAUCxq7InVPjo0sO01B0Vq4d7pD1ask5Ix43'
-    // }
-    
+const [repayAmount, setRepayAmount] = useState('');
+const [selectedDropdown, setSelectedDropdown] = useState('USDC');
     const connectToEthereum = async () => {
         try {
           if (window.ethereum) {
@@ -154,37 +151,176 @@ const Stablecoin = () => {
         else{
             console.log("useeffect")
             const provider = new ethers.providers.Web3Provider(window.ethereum)
-            // console.log("Connected Successfully", account);
-    
-            // Create contract instance with the correct order of arguments
-            const hayTokenContract = new ethers.Contract(HayTokenAddress, HayTokenAbi, provider);
-            let allowance =  ethers.utils.formatUnits(await hayTokenContract.allowance(localStorage.getItem("walletAddress"),InteractionAddress),0);
-            console.log("allowance", allowance)
+          
+            const carbonfinanceContract = new ethers.Contract(carbonfinance, carbonfinanceabi, provider);
+            const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, provider);
+            const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, provider);
+
+            let allowance =  ethers.utils.formatUnits(await creditsContract.allowance(localStorage.getItem("walletAddress"),carbonfinance),0);
+            console.log("allowance1", allowance)
+            setAllowance(allowance);
+            let allowance2 =  ethers.utils.formatUnits(await usdcContract.allowance(localStorage.getItem("walletAddress"),carbonfinance),0);
+            // console.log("allowance2", allowance2)
+            setAllowance2(allowance2);
+            //let totaldeposit = await carbonfinanceContract.methods.getCdpTotalDeposited(localStorage.getItem("walletAddress")).call();
+
+            // let allowance1 =  ethers.utils.formatUnits(await usdcContract.allowance(localStorage.getItem("walletAddress")),0);
+            // let allowance =  ethers.utils.formatUnits(await creditsContract.allowance(localStorage.getItem("walletAddress"),carbonfinance),0);
+            // console.log("allowance", allowance)
             // setAllowance(allowance);
-            let Haybalance = ethers.utils.formatUnits(await hayTokenContract.balanceOf(localStorage.getItem("walletAddress")),0);
-            if( parseFloat(allowance) >= parseFloat(Haybalance) ){
-                setAllowance(1);
-            }
-            else{
-                setAllowance(0);
-            }
+            let usdcbalance = ethers.utils.formatUnits(await usdcContract.balanceOf(localStorage.getItem("walletAddress")),0);
+            let creditsbalance = ethers.utils.formatUnits(await creditsContract.balanceOf(localStorage.getItem("walletAddress")),0);
+            // if( parseFloat(allowance) > 0 ){
+            //     console.log("allowance",allowance);
+            //     setAllowance(1);
+            // }
+            // else{
+            //     setAllowance(0);
+            // }
             let walletbala = await walletBalance();            
-            let withdrawnVal = await withdrawnValue();            
-            const InteractionContract = new ethers.Contract(InteractionAddress, InteractionAbi, provider);
-            let DepositedAmounts =  ethers.utils.formatUnits(await InteractionContract.locked(ceTokenAddress,localStorage.getItem("walletAddress")),18);
             
+           
+            let DepositedAmounts =  ethers.utils.formatUnits(await carbonfinanceContract.getCdpTotalDeposited(localStorage.getItem("walletAddress")),18);
+            let withdrawnVal = ethers.utils.formatUnits(await carbonfinanceContract.getCdpTotalDebt(localStorage.getItem("walletAddress")),18);     
+            let collaterallimit = ethers.utils.formatUnits(await carbonfinanceContract.collateralizationLimit());    
+
             setwalletBalance(ethers.utils.formatUnits(walletbala),18);
-            setcollateralTowithdraw(ethers.utils.formatUnits(withdrawnVal),18);
+            setcollateralTowithdraw(withdrawnVal);
             setCollateralBalance(DepositedAmounts)
+            setCollaterallimt(CollateralBalance - (collateralTowithdraw * collaterallimit)/1e18);
 
-            let borrValue = await repayBorrowValue();
-            let availableToBorrow = await BorrowValue();
+            let borrValue = (CollateralBalance *50)/100;
+            let availableToBorrow = borrValue -collateralTowithdraw;
 
-            setBorrowedAmount(ethers.utils.formatUnits(borrValue),18);
-            setAvailabletoBorrow(ethers.utils.formatUnits(availableToBorrow),18)
-            setHayBalance(ethers.utils.formatUnits(Haybalance),18)
+            setBorrowedAmount(ethers.utils.formatUnits(availableToBorrow),18);
+            // setAvailabletoBorrow(ethers.utils.formatUnits(availableToBorrow),18)
+            setUSDCBalance(ethers.utils.formatUnits(usdcbalance),18)
+            setCreditsBalance(ethers.utils.formatUnits(creditsbalance),18)
         }
       }
+      const handleRepayAmountChange = (e) => {
+        setRepayAmount(e.target.value);
+      };
+    //   const canRepay = (allowance, allowance2, usdcInput, creditInput) => {
+    //     const usdcApproved = parseInt(allowance) >= parseInt(usdcInput);
+    //     const creditApproved = parseInt(allowance2) >= parseInt(creditInput);
+    //     return usdcApproved && creditApproved;
+    //   };
+
+      const canRepay = (allowance, allowance2, amount) => {
+        const usdcApproved = parseInt(allowance) >= parseInt(usdcInput);
+        const creditApproved = parseInt(allowance2) >= parseInt(creditInput);
+        return allowance === 1 && allowance2 === 1 && amount > 0;
+      };
+
+    //   useEffect(() => {
+    //     // Fetch allowances and set them to state variables
+    //     const fetchAllowances = async () => {
+    //         const provider = new ethers.providers.Web3Provider(window.ethereum)
+          
+          
+    //         const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, provider);
+    //         const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, provider);
+    //       const allowanceValue = await usdcContract.allowance(localStorage.getItem("walletAddress"), carbonfinance);
+    //       const allowanceValue2 = await creditsContract.allowance(localStorage.getItem("walletAddress"), carbonfinance);
+    //       setAllowance(ethers.utils.formatUnits(allowanceValue, 0));
+    //       setAllowance2(ethers.utils.formatUnits(allowanceValue2, 0));
+    //     };
+      
+    //     fetchAllowances();
+    //   }, [allowance,allowance2]);
+      
+      // Function to handle input change for USDC
+      const handleUsdcInputChange = (e) => {
+        const { value } = e.target;
+        setUsdcInput(value);
+      };
+      
+      // Function to handle input change for Credits
+      const handleCreditInputChange = (e) => {
+        const { value } = e.target;
+        setCreditInput(value);
+      };
+      const approveUSDC = async () => {
+        handleShowMint();
+        try {
+          const web31 = await connectToEthereum();
+          if (!web31) return;
+      
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const account = accounts[0]; // Use the first account
+      
+          console.log("Connected Successfully", account);
+          const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, web31.getSigner(account));
+       
+          // Create contract instance with the correct order of arguments
+          //const daiContract = new ethers.Contract(daiTokenForDC, allTokenABI, web31.getSigner(account));
+      
+          // Convert daiAmount to BigNumber and multiply by 1e18
+          let inputAmount=BigInt(100000);
+          const usdcAmountBN = ethers.utils.parseUnits(inputAmount.toString(), 18);
+      
+          const approveTx = await usdcContract.approve(carbonfinance, usdcAmountBN);
+          await approveTx.wait();
+      
+          console.log("approveTx", approveTx.hash);
+      
+          // Wait for a moment before fetching transaction details
+          await sleep(2000);
+          
+          const id = `https://goerli.etherscan.io/tx/${approveTx.hash}`;
+          toast.success(toastDiv(id));
+          toast.success("Approval successful");
+          await fraxCalculation();
+          handleHideMint();
+        } catch (error) {
+          toast.error("Approval failed", `${error}`);
+          console.error("Error:", error);
+          handleHideMint();
+        }
+      };
+
+
+      const approveCredits = async () => {
+        handleShowMint();
+        try {
+          const web31 = await connectToEthereum();
+          if (!web31) return;
+      
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const account = accounts[0]; // Use the first account
+      
+          console.log("Connected Successfully", account);
+          //const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, web31.getSigner(account));
+        
+          const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, web31.getSigner(account));
+          // Create contract instance with the correct order of arguments
+          //const daiContract = new ethers.Contract(daiTokenForDC, allTokenABI, web31.getSigner(account));
+      
+          // Convert daiAmount to BigNumber and multiply by 1e18
+          let inputAmount=BigInt(100000);
+          const usdcAmountBN = ethers.utils.parseUnits(inputAmount.toString(), 18);
+      
+          const approveTx = await creditsContract.approve(carbonfinance, usdcAmountBN);
+          await approveTx.wait();
+      
+          console.log("approveTx", approveTx.hash);
+      
+          // Wait for a moment before fetching transaction details
+          await sleep(2000);
+          
+          const id = `https://goerli.etherscan.io/tx/${approveTx.hash}`;
+          toast.success(toastDiv(id));
+          toast.success("Approval successful");
+          await fraxCalculation();
+          handleHideMint();
+        } catch (error) {
+          toast.error("Approval failed", `${error}`);
+          console.error("Error:", error);
+          handleHideMint();
+        }
+      };
+
 
       const walletBalance = async() => {
         let ethBalance;
@@ -209,6 +345,7 @@ const Stablecoin = () => {
       }
 
       const depositETH = async() =>{
+        console.log("Connected Successfully");
         if(parseFloat(DepositAmount) >= parseFloat(0.1)){
             handleShowMint();
             try{
@@ -221,7 +358,8 @@ const Stablecoin = () => {
                 console.log("Connected Successfully", account);
         
                 // Create contract instance with the correct order of arguments
-                const depositContract = new ethers.Contract(HelioProviderAddress, HelioProviderAbi, web31.getSigner(account));
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+                const depositContract = new ethers.Contract(carbonfinance, carbonfinanceabi, web31.getSigner(account));
         
                 // const val = ethers.utils.formatUnits(100000000000000, 0);
                 // let k = Web3.utils.toBN(1000000000000000000n);
@@ -229,13 +367,15 @@ const Stablecoin = () => {
                 // const val1 =  ethers.utils.parseUnits(val11, 18);;
                 // Send the transaction and wait for it to be mined
                 let depositValue = DepositAmount*1e18;
-                const mintTx = await depositContract.provide({ value: BigInt(parseInt(depositValue))});
+                console.log("depositValue",depositValue);
+                const mintTx = await depositContract.deposit(BigInt(depositValue));
+                console.log("depositValue1",mintTx);
                 await mintTx.wait();
                 console.log("minttx",mintTx.hash);
                 // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
                 let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
                 toast.success(toastDiv(id));
-                await fraxCalculation();
+                // await fraxCalculation();
                 await resetValues();
                 toast.success("Deposit is Done succeefully");
                 handleHideMint();
@@ -250,6 +390,75 @@ const Stablecoin = () => {
         }
        
     
+    }
+
+    const LiquidateETH= async() =>{ 
+        console.log("checkkk1")
+        let availabletoborrowed = await LiquidateValue();
+
+        let stopvalue = await stopExecute(availabletoborrowed,DepositAmount*1e18,"Borrow");
+        console.log("checkkk2")
+        if(stopvalue === 0){
+            console.log("checkkk")
+            return;
+        }       
+        handleShowMint();
+        try{
+            const web31 = await connectToEthereum();
+            if (!web31) return;
+    
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const account = accounts[0]; // Use the first account
+    
+            console.log("Connected Successfully", account);
+            const depositContract = new ethers.Contract(carbonfinance, carbonfinanceabi, web31.getSigner(account));
+        
+           
+            let depositValue = DepositAmount*1e18;
+            console.log("depositValue",depositValue);
+            const mintTx = await depositContract.liquidate(BigInt(depositValue));
+            // Create contract instance with the correct order of arguments
+            
+
+            await mintTx.wait();
+            console.log("minttx",mintTx.hash);
+            // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
+            let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+            toast.success(toastDiv(id));
+            await fraxCalculation();
+            await resetValues();
+            toast.success("Borrow is Done succeefully");
+            handleHideMint();
+        }catch(error){
+            toast.error("Borrow is not succeed");
+            console.log("error",error)
+            handleHideMint();
+        }            
+    }
+    const LiquidateValue = async() =>{
+        let diffAmount;
+        if(localStorage.getItem("walletAddress") === null || localStorage.getItem("walletAddress") === undefined || localStorage.getItem("walletAddress") === ''){                
+        }
+        else{
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            // console.log("Connected Successfully", account);
+    
+            // Create contract instance with the correct order of arguments
+            const depositContract = new ethers.Contract(carbonfinance, carbonfinanceabi,provider);
+        
+            //const InteractionContract = new ethers.Contract(InteractionAddress, InteractionAbi, provider);
+            //var totaldebited = await carbonfinancecontract.methods.getCdpTotalDebt(accounts[0]).call();
+            let AvailableBorrow =  ethers.utils.formatUnits(await depositContract.getCdpTotalDeposited(localStorage.getItem("walletAddress")),0);
+            // console.log("borrow",AvailableBorrow);
+            // let withdrawnVal = ethers.utils.formatUnits(await depositContract.getCdpTotalDebt(localStorage.getItem("walletAddress")),0);     
+            // // let DepositedAmounts =  ethers.utils.formatUnits(await InteractionContract.locked(ceTokenAddress,localStorage.getItem("walletAddress")),0);
+            // var av = (AvailableBorrow * 50)/100;
+            // var bb = av - withdrawnVal;
+           
+            diffAmount = AvailableBorrow;
+            console.log("diffAmount",diffAmount);
+        }
+        return diffAmount;
     }
 
     const changeDepositValue = async(value)=>{
@@ -293,12 +502,12 @@ const Stablecoin = () => {
                 console.log("Connected Successfully", account);
         
                 // Create contract instance with the correct order of arguments
-                const depositContract = new ethers.Contract(HelioProviderAddress, HelioProviderAbi, web31.getSigner(account));
+                const depositContract = new ethers.Contract(carbonfinance, carbonfinanceabi, web31.getSigner(account));
         
               
                 // Send the transaction and wait for it to be mined
                 let depositValue = DepositAmount*1e18;
-                const mintTx = await depositContract.release(account, BigInt(parseInt(depositValue)));
+                const mintTx = await depositContract.withdraw(BigInt(depositValue));
                 await mintTx.wait();
                 console.log("minttx",mintTx.hash);
                 // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
@@ -326,15 +535,29 @@ const Stablecoin = () => {
         if(localStorage.getItem("walletAddress") === null || localStorage.getItem("walletAddress") === undefined || localStorage.getItem("walletAddress") === ''){                
         }
         else{
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            const url = "https://goerli.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+            const provider = new ethers.providers.JsonRpcProvider(url);
+            // const provider = new ethers.providers.Web3Provider(window.ethereum)
             // console.log("Connected Successfully", account);
     
             // Create contract instance with the correct order of arguments
-            const InteractionContract = new ethers.Contract(InteractionAddress, InteractionAbi, provider);
-            
-            let borrowedAmounts =  ethers.utils.formatUnits(await InteractionContract.borrowed(ceTokenAddress,localStorage.getItem("walletAddress")),0);
-            let DepositedAmounts =  ethers.utils.formatUnits(await InteractionContract.locked(ceTokenAddress,localStorage.getItem("walletAddress")),0);
-             diffAmount = Math.abs(borrowedAmounts - DepositedAmounts);
+            const carbonfinanceContract = new ethers.Contract(carbonfinance, carbonfinanceabi, provider);
+           // setAvalwithdraw(totaldep - (totaldebt * collaterallimit)/1000000000000000000);
+           console.log("checklog",carbonfinanceContract)
+
+            let DepositedAmounts =   ethers.utils.formatUnits(await carbonfinanceContract.getCdpTotalDeposited(localStorage.getItem("walletAddress")),0);
+            console.log("checklog11",DepositedAmounts)
+            let withdrawnVal = ethers.utils.formatUnits(await carbonfinanceContract.getCdpTotalDebt(localStorage.getItem("walletAddress")),0);     
+            let collaterallimit = ethers.utils.formatUnits(await carbonfinanceContract.collateralizationLimit(),18);    
+            console.log("checklog1")
+           // setwalletBalance(ethers.utils.formatUnits(walletbaln),18);
+            setcollateralTowithdraw(withdrawnVal);
+            setCollateralBalance(DepositedAmounts)
+            setCollaterallimt(CollateralBalance - (collateralTowithdraw * collaterallimit)/1e18);
+          
+
+          
+             diffAmount = Math.abs(CollateralBalance - (collateralTowithdraw * collaterallimit)/1e18);
         }
         return diffAmount;
     }
@@ -345,9 +568,13 @@ const Stablecoin = () => {
         SetDepositAmount((balancewithGasPrice*value)/100);
     }
     const BorrowJUSD = async() =>{ 
+        console.log("checkkk1")
         let availabletoborrowed = await BorrowValue();
+
         let stopvalue = await stopExecute(availabletoborrowed,DepositAmount*1e18,"Borrow");
+        console.log("checkkk2")
         if(stopvalue === 0){
+            console.log("checkkk")
             return;
         }       
         handleShowMint();
@@ -359,14 +586,15 @@ const Stablecoin = () => {
             const account = accounts[0]; // Use the first account
     
             console.log("Connected Successfully", account);
-    
-            // Create contract instance with the correct order of arguments
-            const InteractionContract = new ethers.Contract(InteractionAddress, InteractionAbi, web31.getSigner(account));
-    
-            
-            // Send the transaction and wait for it to be mined
+            const depositContract = new ethers.Contract(carbonfinance, carbonfinanceabi, web31.getSigner(account));
+        
+           
             let depositValue = DepositAmount*1e18;
-            const mintTx = await InteractionContract.borrow(ceTokenAddress, BigInt(parseInt(depositValue)));
+            console.log("depositValue",depositValue);
+            const mintTx = await depositContract.mint(BigInt(depositValue));
+            // Create contract instance with the correct order of arguments
+            
+
             await mintTx.wait();
             console.log("minttx",mintTx.hash);
             // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
@@ -391,11 +619,19 @@ const Stablecoin = () => {
             // console.log("Connected Successfully", account);
     
             // Create contract instance with the correct order of arguments
-            const InteractionContract = new ethers.Contract(InteractionAddress, InteractionAbi, provider);
-            
-            let AvailableBorrow =  ethers.utils.formatUnits(await InteractionContract.availableToBorrow(ceTokenAddress,localStorage.getItem("walletAddress")),0);
+            const depositContract = new ethers.Contract(carbonfinance, carbonfinanceabi,provider);
+        
+            //const InteractionContract = new ethers.Contract(InteractionAddress, InteractionAbi, provider);
+            //var totaldebited = await carbonfinancecontract.methods.getCdpTotalDebt(accounts[0]).call();
+            let AvailableBorrow =  ethers.utils.formatUnits(await depositContract.getCdpTotalDeposited(localStorage.getItem("walletAddress")),0);
+            console.log("borrow",AvailableBorrow);
+            let withdrawnVal = ethers.utils.formatUnits(await depositContract.getCdpTotalDebt(localStorage.getItem("walletAddress")),0);     
             // let DepositedAmounts =  ethers.utils.formatUnits(await InteractionContract.locked(ceTokenAddress,localStorage.getItem("walletAddress")),0);
-            diffAmount = AvailableBorrow;
+            var av = (AvailableBorrow * 50)/100;
+            var bb = av - withdrawnVal;
+           
+            diffAmount = bb;
+            console.log("diffAmount",diffAmount);
         }
         return diffAmount;
     }
@@ -404,15 +640,56 @@ const Stablecoin = () => {
         let balancewithGasPrice = parseFloat(ethbalance/1e18);
         SetDepositAmount((balancewithGasPrice*value)/100);
     }
-   
-    const RepayJUSD = async() =>{ 
-        let availabletoborrowed = await repayBorrowValue();
-        let stopvalue = await stopExecute(availabletoborrowed,DepositAmount*1e18,"Repay");
-        if(stopvalue === 0){
-            return;
-        }       
+    // const canApprovecredit = parseInt(allowan2) >= parseInt(creditInput);
+    // const canApproveusdc = parseInt(allowan) >= parseInt(usdcInput);
+    // const RepayJUSD = async() =>{ 
+    //     let availabletoborrowed = await repayBorrowValue();
+    //     let stopvalue = await stopExecute(availabletoborrowed,DepositAmount*1e18,"Repay");
+    //     if(stopvalue === 0){
+    //         return;
+    //     }       
+    //     handleShowMint();
+    //     try{
+    //         const web31 = await connectToEthereum();
+    //         if (!web31) return;
+    
+    //         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    //         const account = accounts[0]; // Use the first account
+    
+    //         console.log("Connected Successfully", account);
+    //         const provider = new ethers.providers.Web3Provider(window.ethereum)
+    //         // Create contract instance with the correct order of arguments
+    //         const depositContract = new ethers.Contract(carbonfinance, carbonfinanceabi,provider);
+    
+            
+    //         // Send the transaction and wait for it to be mined
+    //         let depositValue = DepositAmount*1e18;
+    //         const mintTx = await depositContract.repay(0, BigInt(depositValue));
+    //         await mintTx.wait();
+    //         console.log("minttx",mintTx.hash);
+    //         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
+    //         let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+    //         toast.success(toastDiv(id));
+    //         await fraxCalculation();
+    //         await resetValues();
+    //         toast.success("Repay is Done succeefully");
+    //         handleHideMint();
+    //     }catch(error){
+    //         toast.error("Repay is not succeed");
+    //         console.log("error",error)
+    //         handleHideMint();
+    //     }            
+    // }
+
+
+    const RepayJUSD = async () => {
+        // let availableToBorrowed = await repayBorrowValue();
+        // let stopValue = await stopExecute(availableToBorrowed, repayAmount * 1e18, "Repay");
+        // if (stopValue === 0) {
+        //     return;
+        // }
         handleShowMint();
-        try{
+        try {
             const web31 = await connectToEthereum();
             if (!web31) return;
     
@@ -420,53 +697,108 @@ const Stablecoin = () => {
             const account = accounts[0]; // Use the first account
     
             console.log("Connected Successfully", account);
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
     
             // Create contract instance with the correct order of arguments
-            const InteractionContract = new ethers.Contract(InteractionAddress, InteractionAbi, web31.getSigner(account));
-    
-            
+            const depositContract = new ethers.Contract(carbonfinance, carbonfinanceabi, web31.getSigner(account));
+            console.log("repayamount", repayAmount);
             // Send the transaction and wait for it to be mined
-            let depositValue = DepositAmount*1e18;
-            const mintTx = await InteractionContract.payback(ceTokenAddress, BigInt(parseInt(depositValue)));
+            let depositValue = repayAmount * 1e18;
+            let mintTx;
+            if (selectedDropdown === 'USDC') {
+                // Repay using USDC
+                mintTx = await depositContract.repay(BigInt(depositValue),0);
+            } else if (selectedDropdown === 'Credits') {
+                // Repay using Credits
+                mintTx = await depositContract.repay(0,BigInt(depositValue));
+            }
             await mintTx.wait();
-            console.log("minttx",mintTx.hash);
-            // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
+            console.log("minttx", mintTx.hash);
             let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
             toast.success(toastDiv(id));
             await fraxCalculation();
             await resetValues();
-            toast.success("Repay is Done succeefully");
+            toast.success("Repay is Done successfully");
             handleHideMint();
-        }catch(error){
+        } catch (error) {
             toast.error("Repay is not succeed");
-            console.log("error",error)
+            console.log("error", error);
             handleHideMint();
-        }            
+        }
     }
-
+    // const approve = async() =>{
+    //     handleShowMint();
+    //     try{
+    //         const web31 = await connectToEthereum();
+    //         if (!web31) return;
+    
+    //         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    //         const account = accounts[0]; // Use the first account
+    
+    //         console.log("Connected Successfully", account);
+    //         // const depositContract = new ethers.Contract(carbonfinance, carbonfinanceabi,provider);
+    
+    //         // Create contract instance with the correct order of arguments
+    //         const carbonixcontract = new ethers.Contract(carbonfinance, carbonfinanceabi, web31.getSigner(account));
+    //         const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, web31.getSigner(account));
+    //         console.log("usdcContract", usdcContract);
+          
+    //         const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, web31.getSigner(account));
+    //         let inputAmount=BigInt(100000);
+    //         console.log("app1", inputAmount);
+    //         const usdcBN = ethers.utils.parseUnits(inputAmount.toString(),18);
+    //         console.log("app", usdcBN);
+    //         const mintTx = await creditsContract.approve(carbonfinance,usdcBN);
+    //         console.log("app22", mintTx);
+    //         await mintTx.wait();
+    //         console.log("minttx",mintTx.hash);
+    //         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
+    //         let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+    //         toast.success(toastDiv(id));
+    //         toast.success("Approve JUSD is Done succeefully");
+    //         await fraxCalculation();
+    //         await resetValues();
+    //         handleHideMint();
+    //     }catch(error){
+    //         toast.error("Approve is not succeed",`${error}`);
+    //         console.log("error",error)
+    //         handleHideMint();
+    //     }
+    
+    // }
     const approve = async() =>{
         handleShowMint();
         try{
             const web31 = await connectToEthereum();
             if (!web31) return;
+
     
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0]; // Use the first account
     
             console.log("Connected Successfully", account);
+            // const carbonixcontract = new ethers.Contract(carbonfinance, carbonfinanceabi, web3.getSigner(account));
+            const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, web31.getSigner(account));
+            // const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, web3.getSigner(account));
     
-            // Create contract instance with the correct order of arguments
-            const hayContract = new ethers.Contract(HayTokenAddress, HayTokenAbi, web31.getSigner(account));
-    
-            const mintTx = await hayContract.approve(InteractionAddress,BigInt(10000000000*1e18));
+            
+
+            const inputAmountCREDIT = BigInt(100000); // Adjust the amount as needed
+            const creditAmountBN = ethers.utils.parseUnits(inputAmountCREDIT.toString(), 0);
+            // const approveTxCREDIT = await creditsContract.approve(carbonfinance, creditAmountBN);
+       
+            // const mintTx = await creditsContract.approve(stabilizer,BigInt(10000000000*1e18));
            
-            await mintTx.wait();
-            console.log("minttx",mintTx.hash);
+            // await approveTxCREDIT.wait();
+            const approveTxusdc = await usdcContract.approve(carbonfinance, 100000000);
+            await approveTxusdc.wait();
+            console.log("minttx",approveTxusdc.hash);
             // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
-            let id = "https://goerli.basescan.org/tx/" + mintTx.hash;
+            let id = "https://goerli.basescan.org/tx/" + approveTxusdc.hash;
             toast.success(toastDiv(id));
             toast.success("Approve JUSD is Done succeefully");
-            await fraxCalculation();
+            // await fraxCalculation();
+            // setAllowance(1);
             await resetValues();
             handleHideMint();
         }catch(error){
@@ -476,6 +808,66 @@ const Stablecoin = () => {
         }
     
     }
+    const approve1 = async () => {
+        handleShowMint();
+        try {
+            const web3 = await connectToEthereum();
+            if (!web3) return;
+    
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const account = accounts[0]; // Use the first account
+    
+            console.log("Connected Successfully", account);
+    
+            const carbonixcontract = new ethers.Contract(carbonfinance, carbonfinanceabi, web3.getSigner(account));
+            const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, web3.getSigner(account));
+            const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, web3.getSigner(account));
+    
+            //const usdcAllowance = await usdcContract.allowance(localStorage.getItem("walletAddress"), carbonfinance);
+
+            let usdcAllowance =  ethers.utils.formatUnits(await usdcContract.allowance(localStorage.getItem("walletAddress"),carbonfinance),0);
+            let creditsAllowance =  ethers.utils.formatUnits(await creditsContract.allowance(localStorage.getItem("walletAddress"),carbonfinance),0);
+
+
+           
+            // If both USDC and CREDIT are already approved, return
+            if (usdcAllowance === 0 && creditsAllowance === 0) {
+                toast.success("Both USDC and CREDIT are already approved.");
+                handleHideMint();
+                return;
+            }
+    
+            // Otherwise, approve USDC if not already approved
+            if (usdcAllowance !== 1) {
+                const inputAmountUSDC = BigInt(100000); // Adjust the amount as needed
+                const usdcAmountBN = ethers.utils.parseUnits(inputAmountUSDC.toString(), 18);
+                const approveTxUSDC = await usdcContract.approve(carbonfinance, usdcAmountBN);
+                await approveTxUSDC.wait();
+                console.log("USDC approved:", approveTxUSDC.hash);
+                toast.success("USDC approval successful.");
+            }
+    
+            // Approve CREDIT if not already approved
+            if (creditsAllowance !== 1) {
+                const inputAmountCREDIT = BigInt(100000); // Adjust the amount as needed
+                const creditAmountBN = ethers.utils.parseUnits(inputAmountCREDIT.toString(), 18);
+                const approveTxCREDIT = await creditsContract.approve(carbonfinance, creditAmountBN);
+                await approveTxCREDIT.wait();
+                console.log("CREDIT approved:", approveTxCREDIT.hash);
+                toast.success("CREDIT approval successful.");
+            }
+    
+            // Refresh page or update UI as needed after approvals
+            // await fraxCalculation();
+            await resetValues();
+            handleHideMint();
+        } catch (error) {
+            toast.error("Approval failed", `${error}`);
+            console.error("Error:", error);
+            handleHideMint();
+        }
+    }
+    
 
     const repayBorrowValue = async() =>{
         let diffAmount;
@@ -486,13 +878,13 @@ const Stablecoin = () => {
             // console.log("Connected Successfully", account);
     
             // Create contract instance with the correct order of arguments
-            const InteractionContract = new ethers.Contract(InteractionAddress, InteractionAbi, provider);
+            // const InteractionContract = new ethers.Contract(InteractionAddress, InteractionAbi, provider);
             
-            let AvailableBorrow =  ethers.utils.formatUnits(await InteractionContract.borrowed(ceTokenAddress,localStorage.getItem("walletAddress")),0);
+            // let AvailableBorrow =  ethers.utils.formatUnits(await InteractionContract.borrowed(ceTokenAddress,localStorage.getItem("walletAddress")),0);
             // let DepositedAmounts =  ethers.utils.formatUnits(await InteractionContract.locked(ceTokenAddress,localStorage.getItem("walletAddress")),0);
-            diffAmount = AvailableBorrow;
+            // diffAmount = AvailableBorrow;
         }
-        return diffAmount;
+        // return diffAmount;
     }
     const repaychangeBorrowValue = async(value)=>{
         let ethbalance = await repayBorrowValue();    
@@ -583,10 +975,25 @@ const Stablecoin = () => {
                                             onChange={(e) => SetDepositAmount(e.target.value)}
                                         />
                                     </Col>
+                                    value={allowan2}:{DepositAmount *1e18}
                                     <Col sm={2}>
-                                        <ButtonLoad loading={loadMint} className='btn w-100 btn-blue mb-20' onClick={depositETH}>
-                                            Deposit
-                                        </ButtonLoad>
+                                    {parseInt(allowan2) >= parseInt(DepositAmount *1e18) ? (
+        <ButtonLoad
+          loading={loadMint}
+          className='btn w-100 btn-blue mb-20'
+          onClick={depositETH}
+        >
+          Deposit
+        </ButtonLoad>
+      ) : (
+        <ButtonLoad
+          loading={loadMint}
+          className='btn w-100 btn-blue mb-20'
+          onClick={approve}
+        >
+          Approve
+        </ButtonLoad>
+      )}
                                     </Col>
                                     
                                 </Row>
@@ -677,7 +1084,7 @@ const Stablecoin = () => {
                                             <span>Your wallet balance:</span>
                                         </div>
                                         <div className="col-6 text-end">
-                                            <span>{HayBalance? parseFloat(HayBalance).toFixed(5): "0.00"} JUSD</span>
+                                            <span>{CreditsBalance? parseFloat(CreditsBalance).toFixed(5): "0.00"} Credits</span>
                                         </div>
                                     </div>
                                     {/* <div className="d-flex">
@@ -817,7 +1224,7 @@ const Stablecoin = () => {
                                             <span>Your wallet balance:</span>
                                         </div>
                                         <div className="col-6 text-end">
-                                            <span>{HayBalance? parseFloat(HayBalance).toFixed(5): "0.00"} JUSD</span>
+                                            <span>{CreditsBalance? parseFloat(CreditsBalance).toFixed(5): "0.00"} Credits</span>
                                         </div>
                                     </div>
                                     {/* <div className="d-flex">
@@ -957,7 +1364,7 @@ const Stablecoin = () => {
                                             <span>Your wallet balance:</span>
                                         </div>
                                         <div className="col-6 text-end">
-                                            <span>{HayBalance? parseFloat(HayBalance).toFixed(5): "0.00"} JUSD</span>
+                                            <span>{CreditsBalance? parseFloat(CreditsBalance).toFixed(5): "0.00"} credits</span>
                                         </div>
                                     </div>
                                     {/* <div className="d-flex">
@@ -981,39 +1388,51 @@ const Stablecoin = () => {
                                 </div>
                                 </Tab>
                                 <Tab eventKey="repay" title="Repay">
-                                <div className="group-row mb-20">
-                                    {allowan === 1 ? 
-                                    (<>
-                                      <Row>
-                                    <Col sm={12} className="mb-3">
-                                        <h5 className='mb-0 font-semibold'>Repay your Borrowed Amount in JUSD</h5>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col sm={2} className="mb-3">
-                                        <Button variant='link' className='btn-currency p-0'>
-                                            <img src={jusdLogo} alt="ETH" />
-                                        </Button>
-                                    </Col>
-                                    <Col sm={8}>
-                                        <FormControl
-                                            value={DepositAmount}
-                                            type='number'
-                                            placeholder="0.00"
-                                            aria-label="Amount to deposit"
-                                            aria-describedby="basic-addon2"
-                                            onChange={(e) => SetDepositAmount(e.target.value)}
-                                        />
-                                    </Col>
-                                    <Col sm={2}>
-                                        <ButtonLoad loading={loadMint} className='btn w-100 btn-blue mb-20' onClick={RepayJUSD}>
-                                            Repay
-                                        </ButtonLoad>
-                                    </Col>
                                     
-                                </Row>
-
-                                <Card.Body className="d-flex justify-content-center">
+                               
+                                <div className="group-row mb-20">
+                                {parseInt(allowan1) && parseInt(allowan2) >= parseInt(repayAmount *1e18) ? (
+    <>
+      <Row>
+        <Col sm={12} className="mb-3">
+          <h5 className='mb-0 font-semibold'>Repay your Borrowed Amount in JUSD</h5>
+        </Col>
+      </Row>
+      <Row>
+        <Col sm={2} className="mb-3">
+          <Button variant='link' className='btn-currency p-0'>
+            <img src={jusdLogo} alt="ETH" />
+          </Button>
+        </Col>
+        <Col sm={8}>
+          <FormControl
+            value={repayAmount}
+            type='number'
+            placeholder="0.00"
+            aria-label="Amount to repay"
+            aria-describedby="basic-addon2"
+            onChange={handleRepayAmountChange}
+          />
+        </Col>
+        
+        <Col sm={2}>
+      
+          <ButtonLoad
+            loading={loadMint}
+            className='btn w-100 btn-blue mb-20'
+            onClick={RepayJUSD}
+            // disabled={!canRepay(allowance, allowance2, repayAmount)}
+          >
+            Repay
+          </ButtonLoad>
+        </Col>
+        
+      </Row>
+      <Form.Select onChange={(e) => setSelectedDropdown(e.target.value)}>
+    <option value="USDC">Repay using USDC</option>
+    <option value="Credits">Repay using Credits</option>
+</Form.Select>
+      <Card.Body className="d-flex justify-content-center">
                                 <Row className="mb-1">
                                 <Col sm={3} className="pe-1">
                                     <ButtonLoad className='btn btn-blue btn-sm percentage-item w-auto' onClick={()=>repaychangeBorrowValue(25)}>
@@ -1037,18 +1456,25 @@ const Stablecoin = () => {
                                 </Col>
                                 </Row>
                                 </Card.Body>
-                                    </>):(<>
-                                        <Row>
-                                    <Col sm={12} className="mb-3">
-                                        <h5 className='mb-0 font-semibold'>Before Repay you want to approve First</h5>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col sm={12} className="mb-3">
-                                    <ButtonLoad loading={loadMint} className='btn w-100 btn-blue mb-20' onClick={approve}>
-                                            Approve
-                                        </ButtonLoad>
-                                    </Col>
+    </>
+  ) : (
+    <>
+      <Row>
+        <Col sm={12} className="mb-3">
+          <h5 className='mb-0 font-semibold'>Before Repay you want to approve First</h5>
+        </Col>
+      </Row>
+      <Row>
+        <Col sm={12} className="mb-3">
+          <ButtonLoad
+            loading={loadMint}
+            className='btn w-100 btn-blue mb-20'
+            onClick={approve}
+          >
+            Approve
+          </ButtonLoad>
+        </Col>
+  
                                 </Row>
                                
                                     </>)}
@@ -1115,7 +1541,7 @@ const Stablecoin = () => {
                                             <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>Your wallet balance:</span>
                                         </div>
                                         <div className="col-6 text-end">
-                                            <span>{HayBalance? parseFloat(HayBalance).toFixed(5): "0.00"} JUSD</span>
+                                            <span>{CreditsBalance? parseFloat(CreditsBalance).toFixed(5): "0.00"} Credits</span>
                                         </div>
                                     </div>
                                     {/* <div className="d-flex">
@@ -1141,6 +1567,133 @@ const Stablecoin = () => {
                                 {/* <Tab eventKey="borrow" title="Borrow">
                              
                                 </Tab> */}
+
+<Tab eventKey="liquidate" title="Liquidate">
+                                <div className="group-row mb-20">
+                                <Row>
+                                    <Col sm={12} className="mb-3">
+                                        <h5 className='mb-0 font-semibold'>Repay the remaining  Credits debt by liquidating your USDC collateral.</h5>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col sm={2} className="mb-3">
+                                        <Button variant='link' className='btn-currency p-0'>
+                                            <img src={ethlogo} alt="ETH" />
+                                        </Button>
+                                    </Col>
+                                    <Col sm={8}>
+                                        <FormControl
+                                            value={DepositAmount}
+                                            type='number'
+                                            placeholder="0.00"
+                                            aria-label="Amount to deposit"
+                                            aria-describedby="basic-addon2"
+                                            onChange={(e) => SetDepositAmount(e.target.value)}
+                                        />
+                                    </Col>
+                                    <Col sm={2}>
+                                        <ButtonLoad loading={loadMint} className='btn w-100 btn-blue mb-20' onClick={LiquidateETH}>
+                                            Liquidate
+                                        </ButtonLoad>
+                                    </Col>
+                                    
+                                </Row>
+
+                                <Card.Body className="d-flex justify-content-center">
+                                <Row className="mb-1">
+                                <Col sm={3} className="pe-1">
+                                    <ButtonLoad className='btn btn-blue btn-sm percentage-item w-auto' onClick={()=>changeDepositValue(25)}>
+                                        25%
+                                    </ButtonLoad>
+                                </Col>
+                                <Col sm={3} className="pe-1">
+                                    <ButtonLoad  className='btn btn-blue btn-sm percentage-item w-auto' onClick={()=>changeDepositValue(50)}>
+                                        50%
+                                    </ButtonLoad>
+                                </Col>
+                                <Col sm={3} className="pe-1">
+                                    <ButtonLoad  className='btn btn-blue btn-sm percentage-item w-auto' onClick={()=>changeDepositValue(75)}>
+                                        75%
+                                    </ButtonLoad>
+                                </Col>
+                                <Col sm={3}>
+                                    <ButtonLoad  className='btn btn-blue btn-sm percentage-item w-auto' onClick={()=>changeDepositValue(100)}>
+                                        100%
+                                    </ButtonLoad>
+                                </Col>
+                                </Row>
+                                </Card.Body>
+
+                                <Row>
+                                <div className="mt-4">
+                                <h5 style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Deposits</h5>
+                                    <div className="d-flex larger">
+                                        <div className="col-6">
+                                            <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>Your wallet balance:</span>
+                                        </div>
+                                        <div className="col-6 text-end">
+                                            <span>{walletsBalance? parseFloat(walletsBalance).toFixed(5): "0.00"} ETH</span>
+                                        </div>
+                                    </div>
+                                    <div className="d-flex">
+                                        <div className="col-6">
+                                            <span>Your collateral balance:</span>
+                                        </div>
+                                        <div className="col-6 text-end">
+                                            <span>{CollateralBalance? parseFloat(CollateralBalance).toFixed(5): "0.00"} ETH</span>
+                                        </div>
+                                    </div>
+                                    <div className="d-flex">
+                                        <div className="col-6">
+                                            <span>Available to withdraw:</span>
+                                        </div>
+                                        <div className="col-6 text-end">
+                                            <span>{collateralTowithdraw? parseFloat(collateralTowithdraw).toFixed(5): "0.00"} ETH</span>
+                                        </div>
+                                    </div>
+                                    {/* <div className="d-flex">
+                                        <div className="col-6">
+                                            <span>BUSD APY:</span>
+                                        </div>
+                                        <div className="col-6 text-end">
+                                            <span>0.000%</span>
+                                        </div>
+                                    </div> */}
+                                </div>
+                                </Row>
+                                <Row>
+                                <div className="mt-4">
+                                    <h5 style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Borrows</h5>
+                                    <div className="d-flex">
+                                        <div className="col-6">
+                                            <span>Remaining JUSD debt:</span>
+                                        </div>
+                                        <div className="col-6 text-end">
+                                            <span>{BorrowedAmount? parseFloat(BorrowedAmount).toFixed(5): "0.00"} JUSD</span>
+                                        </div>
+                                    </div>
+                                    <div className="d-flex">
+                                        <div className="col-6">
+                                            <span>Available to borrow:</span>
+                                        </div>
+                                        <div className="col-6 text-end">
+                                            <span>{AvailabletoBorrow? parseFloat(AvailabletoBorrow).toFixed(5): "0.00"} JUSD</span>
+                                        </div>
+                                    </div>
+                                    <div className="d-flex">
+                                        <div className="col-6">
+                                            <span>Your wallet balance:</span>
+                                        </div>
+                                        <div className="col-6 text-end">
+                                            <span>{CreditsBalance? parseFloat(CreditsBalance).toFixed(5): "0.00"} Credits</span>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                </Row>
+                                </div>
+                                </Tab>
+                                
                             </Tabs>
                         </Card>
                     </Col>
