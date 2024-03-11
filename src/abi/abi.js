@@ -26647,6 +26647,13 @@ export const daiTokenGenesismint = "0x407294028FBb894eC09d648841FC0bB43aCa8a80";
 export const treasuryGenesismint = "0xF7A92FFC6b0CF604C8A0ae00cAE84Bd75CcB137A";
 export const genesisMintContract = "0x7D99722eD5B4438CBBCb30274a6560c243de5d2A";
 
+//Carbonix
+
+export const vaultadapter ="0x8b8fc70D630CF71Ddf689dCCfbF820Dc0C3EbA44";
+export const carbonfinance="0x7F6850791790177cc3f7dA8179d117F97489E6A8";
+export const creditsaddress ="0x96788ca4d75a505c31fFEB2EB95B8AbeB9492021"
+export const sentinel="0x25Ca643609bA768217EFB100C0e289779e804db4"
+
 export const jokerTokenGenesismintabi = [
 	{
 		"inputs": [
