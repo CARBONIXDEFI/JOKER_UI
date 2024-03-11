@@ -12298,9 +12298,12 @@ export const Presale_DIME_CREDITS_Address ="0x8f10863065Cc2ac51d2d73Cc72eE3cf35f
 export const Genesis_Mint_Address ="0xAEA1072920877353270cf171622b3591224eDBb4"
 export const Faucet_Address ="0x4fEF75b1c432Ed43D4F5ADd3E8532661A6757519"
 export const ECO_Reserve_Treasury_Address ="0x7511513B12F1Fc5B27a4Dc2d7D5D97325a08be62"
-export const Burn_Vault_Address ="0xfDaD2501eA07bA121174A1E760Df60Eb14bB6167"
+
 export const vaultadapter ="0x57281D515E78b6DAc1837828Cb920ebf9B567C68"
 export const carbonfinance="0x34A307e6C480E5dE81Bb11B90ff25E0F6dD2829f"
 export const stabilizer="0x6bb2529Bc02CF5F4D40a396a9F578B51C4beC238"
 export const sentinel="0xd0D4a9926d471661B33c1F9640aB527B6A98199C"
+
+
+export const Burn_Vault_Address ="0x7bfD87C15B3D208B2199802B8efc2B538d58278c"
 
