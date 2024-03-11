@@ -150,7 +150,8 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
         }
         else{
             console.log("useeffect")
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            const url = "https://sepolia.infura.io/v3/886e9a53b5da4f6286230678f7591bde";
+            const provider = new ethers.providers.JsonRpcProvider(url);
           
             const carbonfinanceContract = new ethers.Contract(carbonfinance, carbonfinanceabi, provider);
             const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, provider);
@@ -160,7 +161,7 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
             console.log("allowance1", allowance)
             setAllowance(allowance);
             let allowance2 =  ethers.utils.formatUnits(await usdcContract.allowance(localStorage.getItem("walletAddress"),carbonfinance),0);
-            // console.log("allowance2", allowance2)
+            console.log("allowance2", allowance2)
             setAllowance2(allowance2);
             //let totaldeposit = await carbonfinanceContract.methods.getCdpTotalDeposited(localStorage.getItem("walletAddress")).call();
 
@@ -268,7 +269,7 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
           // Wait for a moment before fetching transaction details
           await sleep(2000);
           
-          const id = `https://goerli.etherscan.io/tx/${approveTx.hash}`;
+          const id = `https://sepolia.etherscan.io/tx/${approveTx.hash}`;
           toast.success(toastDiv(id));
           toast.success("Approval successful");
           await fraxCalculation();
@@ -309,7 +310,7 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
           // Wait for a moment before fetching transaction details
           await sleep(2000);
           
-          const id = `https://goerli.etherscan.io/tx/${approveTx.hash}`;
+          const id = `https://sepolia.etherscan.io/tx/${approveTx.hash}`;
           toast.success(toastDiv(id));
           toast.success("Approval successful");
           await fraxCalculation();
@@ -766,6 +767,48 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
     //     }
     
     // }
+    // const approve = async() =>{
+    //     handleShowMint();
+    //     try{
+    //         const web31 = await connectToEthereum();
+    //         if (!web31) return;
+
+    
+    //         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    //         const account = accounts[0]; // Use the first account
+    
+    //         console.log("Connected Successfully", account);
+    //         // const carbonixcontract = new ethers.Contract(carbonfinance, carbonfinanceabi, web3.getSigner(account));
+    //         const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, web31.getSigner(account));
+    //         // const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, web3.getSigner(account));
+    
+            
+
+    //         const inputAmountCREDIT = BigInt(100000); // Adjust the amount as needed
+    //         //const creditAmountBN = ethers.utils.parseUnits(inputAmountCREDIT.toString(), 0);
+    //         // const approveTxCREDIT = await creditsContract.approve(carbonfinance, creditAmountBN);
+       
+    //         // const mintTx = await creditsContract.approve(stabilizer,BigInt(10000000000*1e18));
+           
+    //         // await approveTxCREDIT.wait();
+    //         const approveTxusdc = await usdcContract.approve(carbonfinance, 100000000);
+    //         await approveTxusdc.wait();
+    //         console.log("minttx",approveTxusdc.hash);
+    //         // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
+    //         let id = "https://goerli.basescan.org/tx/" + approveTxusdc.hash;
+    //         toast.success(toastDiv(id));
+    //         toast.success("Approve JUSD is Done succeefully");
+    //         // await fraxCalculation();
+    //         // setAllowance(1);
+    //         await resetValues();
+    //         handleHideMint();
+    //     }catch(error){
+    //         toast.error("Approve is not succeed",`${error}`);
+    //         console.log("error",error)
+    //         handleHideMint();
+    //     }
+    
+    // }
     const approve = async() =>{
         handleShowMint();
         try{
@@ -782,9 +825,10 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
             // const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, web3.getSigner(account));
     
             
-
+            console.log("Connected inputAmountCREDIT");
             const inputAmountCREDIT = BigInt(100000); // Adjust the amount as needed
-            const creditAmountBN = ethers.utils.parseUnits(inputAmountCREDIT.toString(), 0);
+            // const creditAmountBN = ethers.utils.parseUnits(inputAmountCREDIT.toString(), 0);
+            console.log("Connected inputAmountCREDIT");
             // const approveTxCREDIT = await creditsContract.approve(carbonfinance, creditAmountBN);
        
             // const mintTx = await creditsContract.approve(stabilizer,BigInt(10000000000*1e18));
@@ -795,6 +839,48 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
             console.log("minttx",approveTxusdc.hash);
             // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
             let id = "https://goerli.basescan.org/tx/" + approveTxusdc.hash;
+            toast.success(toastDiv(id));
+            toast.success("Approve JUSD is Done succeefully");
+            // await fraxCalculation();
+            // setAllowance(1);
+            await resetValues();
+            handleHideMint();
+        }catch(error){
+            toast.error("Approve is not succeed",`${error}`);
+            console.log("error",error)
+            handleHideMint();
+        }
+    
+    }
+    const approvecredit = async() =>{
+        handleShowMint();
+        try{
+            const web31 = await connectToEthereum();
+            if (!web31) return;
+
+    
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const account = accounts[0]; // Use the first account
+    
+            console.log("Connected Successfully", account);
+            // const carbonixcontract = new ethers.Contract(carbonfinance, carbonfinanceabi, web3.getSigner(account));
+            //const usdcContract = new ethers.Contract(DAI_TOKEN_Address, DAI_TOKEN_ABI, web31.getSigner(account));
+            const creditsContract = new ethers.Contract(CREDITS_Token_Address, CREDITS_Token_ABI, web31.getSigner(account));
+    
+            
+
+            const inputAmountCREDIT = BigInt(100000); // Adjust the amount as needed
+            const creditAmountBN = ethers.utils.parseUnits(inputAmountCREDIT.toString(), 0);
+            const approveTxCREDIT = await creditsContract.approve(carbonfinance, creditAmountBN);
+       
+            //const mintTx = await creditsContract.approve(carbonfinance,BigInt(10000000000*1e18));
+           
+            await approveTxCREDIT.wait();
+            //const approveTxusdc = await usdcContract.approve(carbonfinance, 100000000);
+            //await approveTxusdc.wait();
+            console.log("minttx",approveTxCREDIT.hash);
+            // toast.success(` "Successfully Minted JUSD", ${(mintTx.hash)} `)
+            let id = "https://goerli.basescan.org/tx/" + approveTxCREDIT.hash;
             toast.success(toastDiv(id));
             toast.success("Approve JUSD is Done succeefully");
             // await fraxCalculation();
@@ -977,7 +1063,7 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
                                     </Col>
                                     value={allowan2}:{DepositAmount *1e18}
                                     <Col sm={2}>
-                                    {parseInt(allowan2) >= parseInt(DepositAmount *1e18) ? (
+                                    {parseFloat(allowan2) >= parseFloat(DepositAmount *1e18) ? (
         <ButtonLoad
           loading={loadMint}
           className='btn w-100 btn-blue mb-20'
@@ -1391,7 +1477,7 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
                                     
                                
                                 <div className="group-row mb-20">
-                                {parseInt(allowan1) && parseInt(allowan2) >= parseInt(repayAmount *1e18) ? (
+                                {parseInt(allowan1)  >= parseInt(repayAmount *1e18) ? (
     <>
       <Row>
         <Col sm={12} className="mb-3">
@@ -1469,7 +1555,7 @@ const [selectedDropdown, setSelectedDropdown] = useState('USDC');
           <ButtonLoad
             loading={loadMint}
             className='btn w-100 btn-blue mb-20'
-            onClick={approve}
+            onClick={approvecredit}
           >
             Approve
           </ButtonLoad>
